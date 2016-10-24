@@ -11,12 +11,15 @@ public:
 	virtual ~draw();
 	bool setwindowssize(char *pszwindowtitle,short nx,short ny);
 	void drawmap();
+	void drawmenu();
+	void drawplayinfo();
 	void drawtank(int ndir,int nx,int ny,char *center,char *frame);
 	void cleartank(int ndir,int nx,int ny);
 	void drawbullet(int nx,int ny,char *center);
 	void clearbullet(int nx,int ny);
 	void drawblank(int nx,int ny);
 protected:
+
 	template <typename T>
 	void writechar(int wide,int high,T pszchar,WORD warr);
 };

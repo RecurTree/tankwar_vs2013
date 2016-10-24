@@ -4,6 +4,7 @@
 #include "tank.h"
 #include<vector>
 using std::vector;
+
 class game
 {
 public:
@@ -14,9 +15,9 @@ public:
 	~game();
 	void initgame();
 protected:
-	bool messageloop();
+	bool singleplayerloop();
 	bool playertime();
-	bool getinput(_Out_ char &keydown);
+	bool getinput(_Out_ char &keydown,_In_ int leixing);
 	bool bullettime();
 	bool tankmovecrash(DWORD dwdir);
 	void setmapvaluetank(int x, int y, int nvalue);

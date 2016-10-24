@@ -1,14 +1,12 @@
 #include "mysucai.h"
 #include "draw.h"
-
 draw::draw()
 {
 }
 draw::~draw()
 {
 }
-//坦克形状
-int draw::m_gntankshape[4][3][3] = 
+int draw::m_gntankshape[4][3][3] =
 {
 	{
 		0, 1, 0,
@@ -84,23 +82,24 @@ bool draw::setwindowssize(char *pszwindowtitle, short nx, short ny)
 	COORD pos = GetLargestConsoleWindowSize(hstdOut);
 	COORD buffersize = { pos.X + 1, pos.Y + 1 };
 
-	if (!SetConsoleScreenBufferSize(hstdOut,buffersize))
+	if (!SetConsoleScreenBufferSize(hstdOut, buffersize))
 	{
 		printf("buffer err(%d,%d)%d\n", buffersize.X, buffersize.Y, GetLastError());
 		return false;
 	}
 	SMALL_RECT srcWindow = { 0, 0, nx, ny };
-	if (!SetConsoleWindowInfo(hstdOut, true,&srcWindow))
+	if (!SetConsoleWindowInfo(hstdOut, true, &srcWindow))
 	{
 		printf("size err%d\n", GetLastError());
 		return false;
 	}
 	COORD buffer = { nx + 1, ny + 1 };
-	if (!SetConsoleScreenBufferSize(hstdOut,buffer))
+	if (!SetConsoleScreenBufferSize(hstdOut, buffer))
 	{
 		printf("buffer err(%d%d)%d\n", buffersize.X, buffersize.Y, GetLastError());
 		return false;
 	}
+
 	return true;
 }
 //指定位置打印字符
@@ -131,7 +130,7 @@ void draw::drawmap()
 			}
 			else if (WALL_DIA == m_gnmap[i][j])
 			{
-				writechar(j, i, "〓", F_H_CYAN);
+				writechar(j, i, "〓", F_WHITE);
 			}
 			else if (WALL_COB == m_gnmap[i][j])
 			{
@@ -143,7 +142,7 @@ void draw::drawmap()
 			}
 			else if (WALL_IRO == m_gnmap[i][j])
 			{
-				writechar(j, i, "※", F_H_PURPLE);
+				writechar(j, i, "※", F_RED);
 			}
 			else if (99 == m_gnmap[i][j])
 			{
@@ -155,6 +154,32 @@ void draw::drawmap()
 			}
 		}
 	}
+}
+void draw::drawmenu()
+{
+	for (int i = 0; i < 40; i++)
+	{
+		for (int j = 0; j < 40; j++)
+		{
+			if (i==0||j==0||i==39||j==39)
+			{
+				writechar(i, j, "〓", F_WHITE);
+			}
+
+		}
+	}
+	writechar(10, 10, "***************************************", F_RED);
+	writechar(10, 11, "*                                     *", F_RED);
+	writechar(10, 12, "*          **1*.**开*始*游*戏**       *", F_RED);
+	writechar(10, 13, "*          **2*.**双*人*游*戏**       *", F_RED);
+	writechar(10, 14, "*          **3*.**绘*制*地*图**       *", F_RED);
+	writechar(10, 15, "*          **4*.**退*出*游*戏**       *", F_RED);
+	writechar(10, 16, "*                                     *", F_RED);
+	writechar(10, 17, "***************************************", F_RED);
+}
+void draw::drawplayinfo()
+{
+
 }
 //画坦克
 void draw::drawtank(int ndir, int nx, int ny, char *center, char *frame)

@@ -56,6 +56,11 @@
 #define  DOWN		1
 #define  LEFT		2
 #define  RIGHT		3
-
-
+//区分输入
+#define menu 0
+#define	control 1
+//一些图案
+extern char* bullet_pic[10];
+extern char* tank_pic[5];
+extern char* wall_pic[8];
 

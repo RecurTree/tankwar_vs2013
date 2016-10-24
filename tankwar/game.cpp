@@ -1,6 +1,7 @@
 #include "mysucai.h"
 #include "game.h"
 #include<conio.h>
+
 game::game()
 {
 }
@@ -11,13 +12,15 @@ void game::initgame()
 {
 	//设置窗口大小和标题
 	m_draw.setwindowssize("Tank War v0.1", 100, 39);
-	m_draw.drawmap();
-	tank::stank stank{ 0, 10, 10, 10, 1 };
-	m_tank.inittankinfo(stank);
-	m_draw.drawtank(0, 10, 10, "①", "s");
-	messageloop();
+	while (true)
+	{
+		char ch;
+
+		m_draw.drawmenu();
+		getinput(ch,menu);
+	}
 }
-bool game::messageloop()
+bool game::singleplayerloop()
 {
 	DWORD dwplayerbegin = GetTickCount(), dwbullebegin = GetTickCount(), dwplayerend, dwbulletend;
 	while (true)
@@ -43,60 +46,85 @@ bool game::playertime()
 	char ch;
 	m_draw.cleartank(m_tank.m_obj.ndirection, m_tank.m_obj.nx, m_tank.m_obj.ny);
 	setmapvaluetank(m_tank.m_obj.nx, m_tank.m_obj.ny, 0);
-	getinput(ch);
-	m_draw.drawtank(m_tank.m_obj.ndirection, m_tank.m_obj.nx, m_tank.m_obj.ny, "①", "H");
+	getinput(ch,control);
+	m_draw.drawtank(m_tank.m_obj.ndirection, m_tank.m_obj.nx, m_tank.m_obj.ny, "①", tank_pic[1]);
 	setmapvaluetank(m_tank.m_obj.nx, m_tank.m_obj.ny, m_tank.m_obj.nid);
 	return true;
 }
-bool game::getinput(_Out_ char &KEYDOWN)
+bool game::getinput(_Out_ char &KEYDOWN,_In_ int leixing)
 {
-	if (KEYDOWN('w') ||KEYDOWN('W'))
+	if (leixing == control)
 	{
-		if (tankmovecrash(UP))
+		if (KEYDOWN('w') || KEYDOWN('W'))
 		{
-			m_tank.tankmove(UP);
+			if (tankmovecrash(UP))
+			{
+				m_tank.tankmove(UP);
+			}
+		}
+		if (KEYDOWN('S') || KEYDOWN('s'))
+		{
+			if (tankmovecrash(DOWN))
+			{
+				m_tank.tankmove(DOWN);
+			}
+		}
+		if (KEYDOWN('A') || KEYDOWN('a'))
+		{
+			if (tankmovecrash(LEFT))
+			{
+				m_tank.tankmove(LEFT);
+			}
+		}
+		if (KEYDOWN('D') || KEYDOWN('d'))
+		{
+			if (tankmovecrash(RIGHT))
+			{
+				m_tank.tankmove(RIGHT);
+			}
+		}
+		if (KEYDOWN('P') || KEYDOWN('p'))
+		{
+			_getch();
+		}
+		if (KEYDOWN(VK_SPACE))
+		{
+			bullet bullet_;
+			if (createbullet(m_tank, BULLET_ID_MINE, bullet_))
+			{
+
+				m_vecbullet.push_back(bullet_);
+				m_draw.drawbullet(bullet_.m_obj.nx, bullet_.m_obj.ny, "o");
+				setmapvaluebullet(bullet_.m_obj.nx, bullet_.m_obj.ny, BULLET_MINE);
+			}
+
+		}
+		if (KEYDOWN(VK_ESCAPE))
+		{
+			initgame();
 		}
 	}
-	if (KEYDOWN('S') || KEYDOWN('s'))
+	else if (leixing==menu)
 	{
-		if (tankmovecrash(DOWN))
+		if (KEYDOWN('1'))
 		{
-			m_tank.tankmove(DOWN);
+			m_draw.drawmap();
+			tank::stank stank{ 0, 10, 10, 10, 1 };
+			m_tank.inittankinfo(stank);
+			m_draw.drawtank(0, 10, 10, "①", "1");
+			singleplayerloop();
 		}
-	}
-	if (KEYDOWN('A') || KEYDOWN('a'))
-	{
-		if (tankmovecrash(LEFT))
-		{
-			m_tank.tankmove(LEFT);
-		}
-	}
-	if (KEYDOWN('D') || KEYDOWN('d'))
-	{
-		if (tankmovecrash(RIGHT))
-		{
-			m_tank.tankmove(RIGHT);
-		}
-	}
-	if (KEYDOWN('P') || KEYDOWN('p'))
-	{
-		_getch();
-	}
-	if (KEYDOWN(VK_SPACE))
-	{
-		bullet bullet_;
-		if (createbullet(m_tank,BULLET_ID_MINE,bullet_))
+		if (KEYDOWN('2'))
 		{
 			
-			m_vecbullet.push_back(bullet_);
-			m_draw.drawbullet(bullet_.m_obj.nx, bullet_.m_obj.ny, "o");
-			setmapvaluebullet(bullet_.m_obj.nx, bullet_.m_obj.ny, BULLET_MINE);
 		}
-		
-	}
-	if (KEYDOWN(VK_ESCAPE))
-	{
-		exit(0);
+		if (KEYDOWN('3'))
+		{
+		}
+		if (KEYDOWN('4'))
+		{
+			exit(0);
+		}
 	}
 	return true;
 }

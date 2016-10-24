@@ -30,9 +30,6 @@
     <ClInclude Include="game.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="menu.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tank.cpp">
@@ -50,7 +47,7 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="menu.cpp">
+    <ClCompile Include="mysucai.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
