@@ -1,24 +1,29 @@
 #include "mysucai.h"
 #include "game.h"
 #include<conio.h>
-
 game::game()
 {
 }
 game::~game()
 {
 }
-void game::initgame()
+void game::initgamewindow()
 {
 	//设置窗口大小和标题
 	m_draw.setwindowssize("Tank War v0.1", 100, 39);
 	while (true)
 	{
 		char ch;
-
 		m_draw.drawmenu();
 		getinput(ch,menu);
 	}
+}
+void game::initsingleplayergame()
+{
+	m_draw.drawmap();
+	tank::stank stank{ 0, 10, 10, 10, 1 };
+	m_tank.inittankinfo(stank);
+	m_draw.drawtank(0, 10, 10, "①", "1");
 }
 bool game::singleplayerloop()
 {
@@ -40,6 +45,50 @@ bool game::singleplayerloop()
 		//剩下的交给敌军表演
 	}
 	return false;
+}
+void game::initdoubleplayergame()
+{
+	initsingleplayergame();
+	tank::stank stank2{ 0, 10, 30, 10, 1 };
+	m_tank.inittankinfo(stank2);
+	m_draw.drawtank(0, 30, 10, "②", "2");
+}
+bool game::doubleplayerloop()
+{
+	DWORD dwplayer1begin = GetTickCount(), dwbullet1begin = GetTickCount(), 
+		dwplayer2begin=GetTickCount(),dwbullet2begin=GetTickCount(),
+		dwplayer1end, dwbullet1end,
+		dwplayer2end, dwbullet2end;
+	while (true)
+	{
+		dwplayer1end = GetTickCount();
+		if (dwplayer1end - dwplayer1begin > 100)
+		{
+			dwplayer1begin = dwplayer1end;
+			playertime();
+		}
+		dwbullet1end = GetTickCount();
+		if (dwbullet1end - dwbullet1begin > 50)
+		{
+			dwbullet1begin = dwbullet1end;
+			bullettime();
+		}
+		dwplayer2end = GetTickCount();
+		if (dwplayer2end - dwplayer2begin > 100)
+		{
+			dwplayer2begin = dwplayer2end;
+			playertime();
+		}
+		dwbullet2end = GetTickCount();
+		if (dwbullet2end - dwbullet2begin > 50)
+		{
+			dwbullet2begin = dwbullet2end;
+			bullettime();
+		}
+		//剩下的交给敌军表演
+	}
+	return false;
+
 }
 bool game::playertime()
 {
@@ -101,25 +150,24 @@ bool game::getinput(_Out_ char &KEYDOWN,_In_ int leixing)
 		}
 		if (KEYDOWN(VK_ESCAPE))
 		{
-			initgame();
+			initgamewindow();
 		}
 	}
 	else if (leixing==menu)
 	{
 		if (KEYDOWN('1'))
 		{
-			m_draw.drawmap();
-			tank::stank stank{ 0, 10, 10, 10, 1 };
-			m_tank.inittankinfo(stank);
-			m_draw.drawtank(0, 10, 10, "①", "1");
+			initsingleplayergame();
 			singleplayerloop();
 		}
 		if (KEYDOWN('2'))
 		{
-			
+			initdoubleplayergame();
+			doubleplayerloop();
 		}
 		if (KEYDOWN('3'))
 		{
+			
 		}
 		if (KEYDOWN('4'))
 		{

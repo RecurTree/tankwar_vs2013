@@ -2,6 +2,6 @@
 int main()
 {
 	game start;
-	start.initgame();
+	start.initgamewindow();
 	return 0;
 }

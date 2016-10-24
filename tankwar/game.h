@@ -13,9 +13,12 @@ public:
 	vector<bullet> m_vecbullet;
 	game();
 	~game();
-	void initgame();
+	void initgamewindow();
 protected:
+	void initsingleplayergame();
 	bool singleplayerloop();
+	void initdoubleplayergame();
+	bool doubleplayerloop();
 	bool playertime();
 	bool getinput(_Out_ char &keydown,_In_ int leixing);
 	bool bullettime();
