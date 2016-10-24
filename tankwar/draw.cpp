@@ -118,7 +118,7 @@ void draw::writechar(int wide, int high, T pszchar, WORD warr)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), loc);
 	cout << pszchar;
 }
-
+//»­µØÍ¼
 void draw::drawmap()
 {
 	for (int i = 0; i < 40; i++)
@@ -155,4 +155,48 @@ void draw::drawmap()
 			}
 		}
 	}
+}
+//»­Ì¹¿Ë
+void draw::drawtank(int ndir, int nx, int ny, char *center, char *frame)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (1==m_gntankshape[ndir][i][j])
+			{
+				writechar(nx-1+j,ny-1+i,frame,F_H_YELLOW);
+			}
+			else if (2 == m_gntankshape[ndir][i][j])
+			{
+				writechar(nx - 1 + j, ny - 1 + i, center, F_RED);
+			}
+		}
+	}
+}
+//
+void draw::cleartank(int ndir, int nx, int ny)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (m_gntankshape[ndir][i][j])
+			{
+				writechar(nx - 1 + j, ny - 1 + i,"  ", F_H_YELLOW);
+			}
+		}
+	}
+}
+void draw::drawbullet(int nx, int ny,char *center)
+{
+	writechar(nx, ny, center, F_PURPLE);
+}
+void draw::clearbullet(int nx, int ny)
+{
+	writechar(nx, ny, " ", 0);
+}
+void draw::drawblank(int nx, int ny)
+{
+	writechar(nx, ny, " ", 0);
 }
