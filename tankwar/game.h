@@ -16,6 +16,7 @@ public:
 	vector<bullet> m_vecbullet2;
 	game();
 	~game();
+	bool isplayer1 = true;
 	bool issingle = true;
 	void initgamewindow();
 protected:
@@ -25,7 +26,7 @@ protected:
 	bool doubleplayerloop();
 	bool player1time();
 	bool player2time();
-	bool getinput(_Out_ char &keydown,_In_ int leixing);
+	bool getinput(_Out_ char &keydown,_In_ int leixing,bool);
 	bool bullet1time();
 	bool bullet2time();
 	bool tankmovecrash(DWORD dwdir,tank &tank_);
