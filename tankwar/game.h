@@ -10,22 +10,26 @@ class game
 public:
 	draw m_draw;
 	tank m_tank;
+	tank m_tank2;
 	vector<bullet> m_vecbullet;
 	game();
 	~game();
+	bool issingle = true;
 	void initgamewindow();
 protected:
 	void initsingleplayergame();
 	bool singleplayerloop();
 	void initdoubleplayergame();
 	bool doubleplayerloop();
-	bool playertime();
+	bool player1time();
+	bool player2time();
 	bool getinput(_Out_ char &keydown,_In_ int leixing);
-	bool bullettime();
-	bool tankmovecrash(DWORD dwdir);
+	bool bullet1time();
+	bool bullet2time();
+	bool tankmovecrash(DWORD dwdir,tank &tank_);
 	void setmapvaluetank(int x, int y, int nvalue);
 	void setmapvaluebullet(int x, int y, int nvalue);
-	bool createbullet(const tank &tank_, unsigned int nid, bullet &bullet_);
+	bool createbullet(tank &tank_, unsigned int nid, bullet &bullet_);
 	bool bulletcrashall(CPoint &ptbullet);
 	bool bulletcrashwall(int &nvalue, CPoint &ptbullet);
 };

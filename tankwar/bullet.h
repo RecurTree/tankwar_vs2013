@@ -17,5 +17,6 @@ public:
 	void getforwardpoint(_Out_ CPoint & ptforward);
 	bool bulletmove();
 	sbullet m_obj;
+	
 };
 

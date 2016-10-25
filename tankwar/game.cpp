@@ -34,13 +34,13 @@ bool game::singleplayerloop()
 		if (dwplayerend - dwplayerbegin > 100)
 		{
 			dwplayerbegin = dwplayerend;
-			playertime();
+			player1time();
 		}
 		dwbulletend = GetTickCount();
 		if (dwbulletend-dwbullebegin>50)
 		{
 			dwbullebegin = dwbulletend;
-			bullettime();
+			bullet1time();
 		}
 		//剩下的交给敌军表演
 	}
@@ -49,9 +49,9 @@ bool game::singleplayerloop()
 void game::initdoubleplayergame()
 {
 	initsingleplayergame();
-	tank::stank stank2{ 0, 10, 30, 10, 1 };
-	m_tank.inittankinfo(stank2);
-	m_draw.drawtank(0, 30, 10, "②", "2");
+	tank::stank stank2{ 0, 30, 30, 10, 1 };
+	m_tank2.inittankinfo(stank2);
+	m_draw.drawtank(0, 30, 30, "②", tank_pic[2]);
 }
 bool game::doubleplayerloop()
 {
@@ -65,32 +65,31 @@ bool game::doubleplayerloop()
 		if (dwplayer1end - dwplayer1begin > 100)
 		{
 			dwplayer1begin = dwplayer1end;
-			playertime();
+			player1time();
 		}
 		dwbullet1end = GetTickCount();
 		if (dwbullet1end - dwbullet1begin > 50)
 		{
 			dwbullet1begin = dwbullet1end;
-			bullettime();
+			bullet1time();
 		}
 		dwplayer2end = GetTickCount();
 		if (dwplayer2end - dwplayer2begin > 100)
 		{
 			dwplayer2begin = dwplayer2end;
-			playertime();
+			player2time();
 		}
 		dwbullet2end = GetTickCount();
 		if (dwbullet2end - dwbullet2begin > 50)
 		{
 			dwbullet2begin = dwbullet2end;
-			bullettime();
+			bullet2time();
 		}
 		//剩下的交给敌军表演
 	}
 	return false;
-
 }
-bool game::playertime()
+bool game::player1time()
 {
 	char ch;
 	m_draw.cleartank(m_tank.m_obj.ndirection, m_tank.m_obj.nx, m_tank.m_obj.ny);
@@ -100,53 +99,99 @@ bool game::playertime()
 	setmapvaluetank(m_tank.m_obj.nx, m_tank.m_obj.ny, m_tank.m_obj.nid);
 	return true;
 }
+bool game::player2time()
+{
+	char ch;
+	m_draw.cleartank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny);
+	setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, 0);
+	getinput(ch, control);
+	m_draw.drawtank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny, "②", tank_pic[2]);
+	setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, m_tank2.m_obj.nid);
+	return true;
+}
 bool game::getinput(_Out_ char &KEYDOWN,_In_ int leixing)
 {
 	if (leixing == control)
 	{
 		if (KEYDOWN('w') || KEYDOWN('W'))
 		{
-			if (tankmovecrash(UP))
+			if (tankmovecrash(UP,m_tank))
 			{
 				m_tank.tankmove(UP);
 			}
 		}
 		if (KEYDOWN('S') || KEYDOWN('s'))
 		{
-			if (tankmovecrash(DOWN))
+			if (tankmovecrash(DOWN,m_tank))
 			{
 				m_tank.tankmove(DOWN);
 			}
 		}
 		if (KEYDOWN('A') || KEYDOWN('a'))
 		{
-			if (tankmovecrash(LEFT))
+			if (tankmovecrash(LEFT,m_tank))
 			{
 				m_tank.tankmove(LEFT);
 			}
 		}
 		if (KEYDOWN('D') || KEYDOWN('d'))
 		{
-			if (tankmovecrash(RIGHT))
+			if (tankmovecrash(RIGHT,m_tank))
 			{
 				m_tank.tankmove(RIGHT);
+			}
+		}
+		if (KEYDOWN('i')||(KEYDOWN('I')))
+		{
+			if (tankmovecrash(UP,m_tank2))
+			{
+				m_tank2.tankmove(UP);
+			}
+		}
+		if (KEYDOWN('K')|| KEYDOWN('k'))
+		{
+			if (tankmovecrash(DOWN,m_tank2))
+			{
+				m_tank2.tankmove(DOWN);
+			}
+		}
+		if (KEYDOWN('j') || KEYDOWN('J'))
+		{
+			if (tankmovecrash(LEFT,m_tank2))
+			{
+				m_tank2.tankmove(LEFT);
+			}
+		}
+		if (KEYDOWN('L') || KEYDOWN('l'))
+		{
+			if (tankmovecrash(RIGHT,m_tank2))
+			{
+				m_tank2.tankmove(RIGHT);
 			}
 		}
 		if (KEYDOWN('P') || KEYDOWN('p'))
 		{
 			_getch();
 		}
+		if (KEYDOWN('o') || KEYDOWN('O'))
+		{
+			bullet bullet_2;
+			if (createbullet(m_tank2, BULLET_MINE, bullet_2))
+			{
+				m_vecbullet.push_back(bullet_2);
+				m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[1]);
+				setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, BULLET_MINE);
+			}
+		}
 		if (KEYDOWN(VK_SPACE))
 		{
 			bullet bullet_;
 			if (createbullet(m_tank, BULLET_ID_MINE, bullet_))
 			{
-
 				m_vecbullet.push_back(bullet_);
-				m_draw.drawbullet(bullet_.m_obj.nx, bullet_.m_obj.ny, "o");
+				m_draw.drawbullet(bullet_.m_obj.nx, bullet_.m_obj.ny, bullet_pic[2]);
 				setmapvaluebullet(bullet_.m_obj.nx, bullet_.m_obj.ny, BULLET_MINE);
 			}
-
 		}
 		if (KEYDOWN(VK_ESCAPE))
 		{
@@ -157,11 +202,13 @@ bool game::getinput(_Out_ char &KEYDOWN,_In_ int leixing)
 	{
 		if (KEYDOWN('1'))
 		{
+			issingle = true;
 			initsingleplayergame();
 			singleplayerloop();
 		}
 		if (KEYDOWN('2'))
 		{
+			issingle = false;
 			initdoubleplayergame();
 			doubleplayerloop();
 		}
@@ -176,15 +223,15 @@ bool game::getinput(_Out_ char &KEYDOWN,_In_ int leixing)
 	}
 	return true;
 }
-bool game::bullettime()
+bool game::bullet1time()
 {
 	for (UINT i = 0; i < m_vecbullet.size();i++)
 	{
-		bullet &bullet_ = m_vecbullet[i];
-		m_draw.clearbullet(bullet_.m_obj.nx, bullet_.m_obj.ny);
-		setmapvaluebullet(bullet_.m_obj.nx, bullet_.m_obj.ny, 0);
+		bullet &bullet_1 = m_vecbullet[i];
+		m_draw.clearbullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny);
+		setmapvaluebullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, 0);
 		CPoint ptforward;
-		bullet_.getforwardpoint(ptforward);
+		bullet_1.getforwardpoint(ptforward);
 		if (bulletcrashall(ptforward))
 		{
 			m_vecbullet.erase(m_vecbullet.begin() + i);
@@ -192,23 +239,46 @@ bool game::bullettime()
 		}
 		else
 		{
-			bullet_.bulletmove();
-			m_draw.drawbullet(bullet_.m_obj.nx, bullet_.m_obj.ny, "o");
-			setmapvaluebullet(bullet_.m_obj.nx, bullet_.m_obj.ny, bullet_.m_obj.nid | OBJ_TYPE_BULLET);
+			bullet_1.bulletmove();
+			m_draw.drawbullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, bullet_pic[1]);
+			setmapvaluebullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, bullet_1.m_obj.nid | OBJ_TYPE_BULLET);
 		}
 	}
 	return true;
 }
-bool game::tankmovecrash(DWORD dwdir)
+bool game::bullet2time()
+{
+	for (UINT i = 0; i < m_vecbullet.size(); i++)
+	{
+		bullet &bullet_2 = m_vecbullet[i];
+		m_draw.clearbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny);
+		setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, 0);
+		CPoint ptforward;
+		bullet_2.getforwardpoint(ptforward);
+		if (bulletcrashall(ptforward))
+		{
+			m_vecbullet.erase(m_vecbullet.begin() + i);
+			i--;
+		}
+		else
+		{
+			bullet_2.bulletmove();
+			m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[2]);
+			setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_2.m_obj.nid | OBJ_TYPE_BULLET);
+		}
+	}
+	return true;
+}
+bool game::tankmovecrash(DWORD dwdir,tank &tank_)
 {
 	CPoint pt[3] = {};
-	if (dwdir!=m_tank.m_obj.ndirection)
+	if (dwdir != tank_.m_obj.ndirection)
 	{
 		return true;
 	}
 	else
 	{
-		m_tank.getthreepoint(pt);
+		tank_.getthreepoint(pt);
 	}
 	for (int i= 0; i < 3;i++)
 	{
@@ -233,10 +303,10 @@ void game::setmapvaluebullet(int x, int y, int nvalue)
 {
 	m_draw.m_gnmap[y][x] = nvalue;
 }
-bool game::createbullet(const tank &tank_, unsigned int nid, bullet &bullet_)
+bool game::createbullet(tank &tank_, unsigned int nid, bullet &bullet_)
 {
 	CPoint pt[3] = {};
-	m_tank.getthreepoint(pt);
+	tank_.getthreepoint(pt);
 	bullet_ = { tank_.m_obj.ndirection, (unsigned int)pt[0].x, (unsigned int)pt[0].y, nid };
 	if (!bulletcrashall(pt[0]))
 	{
