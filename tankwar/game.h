@@ -8,10 +8,12 @@ using std::vector;
 class game
 {
 public:
+
 	draw m_draw;
 	tank m_tank;
 	tank m_tank2;
-	vector<bullet> m_vecbullet;
+	vector<bullet> m_vecbullet1;
+	vector<bullet> m_vecbullet2;
 	game();
 	~game();
 	bool issingle = true;

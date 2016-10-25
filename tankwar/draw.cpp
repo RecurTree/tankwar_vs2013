@@ -208,7 +208,7 @@ void draw::cleartank(int ndir, int nx, int ny)
 		{
 			if (m_gntankshape[ndir][i][j])
 			{
-				writechar(nx - 1 + j, ny - 1 + i,"  ", F_H_YELLOW);
+				writechar(nx - 1 + j, ny - 1 + i,"  ", F_YELLOW);
 			}
 		}
 	}
