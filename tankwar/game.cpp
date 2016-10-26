@@ -1,6 +1,7 @@
 #include "mysucai.h"
 #include "game.h"
 #include<conio.h>
+#include<time.h>
 game::game()
 {
 }
@@ -15,7 +16,7 @@ void game::initgamewindow()
 	{
 		char ch;
 		m_draw.drawmenu();
-		getinput(ch,menu,true);
+		getinput(ch,menu,play1);
 	}
 }
 void game::initsingleplayergame()
@@ -23,7 +24,27 @@ void game::initsingleplayergame()
 	m_draw.drawmap();
 	tank::stank stank{ 0, 13, 37, 10, 1 };
 	m_tank.inittankinfo(stank);
-	m_draw.drawtank(0, 13, 37, "①", tank_pic[1]);
+	m_draw.drawtank(0, 13, 37, "①", tank_pic[1],F_YELLOW);
+}
+void game::initenemytank()
+{
+	srand((unsigned)time(NULL));
+	tank::stank enemy_1{ 1, 2, 2, 1, 1 };
+	m_enemytank1.inittankinfo(enemy_1);
+	m_draw.drawtank(1, 2, 2, "③",tank_pic[3],F_RED);
+	tank::stank enemy_2{ 1, 20, 2, 1, 1 };
+	m_enemytank1.inittankinfo(enemy_1);
+	m_draw.drawtank(1, 20, 2, "③", tank_pic[3], F_RED);
+	tank::stank enemy_3{ 1, 36, 2, 1, 1 };
+	m_enemytank1.inittankinfo(enemy_1);
+	m_draw.drawtank(1, 36, 2, "③", tank_pic[3], F_RED);
+}
+void game::initdoubleplayergame()
+{
+	initsingleplayergame();
+	tank::stank stank2{ 0, 27, 37, 10, 1 };
+	m_tank2.inittankinfo(stank2);
+	m_draw.drawtank(0, 27, 37, "②", tank_pic[2],F_BLUE);
 }
 bool game::singleplayerloop()
 {
@@ -35,6 +56,7 @@ bool game::singleplayerloop()
 		{
 			dwplayerbegin = dwplayerend;
 			player1time();
+			enemy1time();
 		}
 		dwbulletend = GetTickCount();
 		if (dwbulletend-dwbullebegin>50)
@@ -46,13 +68,7 @@ bool game::singleplayerloop()
 	}
 	return false;
 }
-void game::initdoubleplayergame()
-{
-	initsingleplayergame();
-	tank::stank stank2{ 0, 27, 37, 10, 1 };
-	m_tank2.inittankinfo(stank2);
-	m_draw.drawtank(0, 27, 37, "②", tank_pic[2]);
-}
+
 bool game::doubleplayerloop()
 {
 	DWORD dwplayerbegin = GetTickCount(), dwbulletbegin = GetTickCount(),
@@ -63,6 +79,7 @@ bool game::doubleplayerloop()
 		if (dwplayerend - dwplayerbegin > 100)
 		 {
 			dwplayerbegin = dwplayerend;
+			enemy1time();
 			player1time();
 			player2time();
 		}
@@ -70,11 +87,10 @@ bool game::doubleplayerloop()
 		if (dwbulletend - dwbulletbegin > 50)
 		{
 			dwbulletbegin = dwbulletend;
+			
 			bullet1time();
 			bullet2time();
 		}
-		
-		//剩下的交给敌军表演
 	}
 	return false;
 }
@@ -84,7 +100,7 @@ bool game::player1time()
 	m_draw.cleartank(m_tank.m_obj.ndirection, m_tank.m_obj.nx, m_tank.m_obj.ny);
 	setmapvaluetank(m_tank.m_obj.nx, m_tank.m_obj.ny, 0);
 	getinput(ch, control,true);
-	m_draw.drawtank(m_tank.m_obj.ndirection, m_tank.m_obj.nx, m_tank.m_obj.ny, "①", tank_pic[1]);
+	m_draw.drawtank(m_tank.m_obj.ndirection, m_tank.m_obj.nx, m_tank.m_obj.ny, "①", tank_pic[1], F_YELLOW);
 	setmapvaluetank(m_tank.m_obj.nx, m_tank.m_obj.ny, m_tank.m_obj.nid);
 	return true;
 }
@@ -94,15 +110,57 @@ bool game::player2time()
 	m_draw.cleartank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny);
 	setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, 0);
 	getinput(ch, control,false);
-	m_draw.drawtank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny, "②", tank_pic[2]);
+	m_draw.drawtank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny, "②", tank_pic[2], F_BLUE);
 	setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, m_tank2.m_obj.nid);
 	return true;
 }
-bool game::getinput(_Out_ char &KEYDOWN, _In_ int leixing, bool isplayer1)
+char game::getdirfromrand(int rand)
+{
+	switch (rand)
+	{
+	case 1:
+		return '1';
+		break;
+	case 2:
+		return '2';
+		break;
+	case 3:
+		return '3';
+		break;
+	case 4:
+		return '4';
+		break;
+	default:
+		
+		break;
+	}
+	return '5';
+}
+bool game::enemy1time()
+{
+	char ch;
+	int random = rand() % 5+1;
+	ch = getdirfromrand(random);
+	m_draw.cleartank(m_enemytank1.m_obj.ndirection, m_enemytank1.m_obj.nx, m_enemytank1.m_obj.ny);
+	setmapvaluetank(m_enemytank1.m_obj.nx, m_enemytank1.m_obj.ny, 0);
+	getinput(ch, control, enemy1);
+	m_draw.drawtank(m_enemytank1.m_obj.ndirection, m_enemytank1.m_obj.nx, m_enemytank1.m_obj.ny, "②", tank_pic[2], F_BLUE);
+	setmapvaluetank(m_enemytank1.m_obj.nx, m_enemytank1.m_obj.ny, m_enemytank1.m_obj.nid);
+	return true;
+}
+//bool game::enemy2time()
+//{
+//
+//}
+//bool game::enemy3time()
+//{
+//
+//}
+bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
 {
 	if (leixing == control)
 	{
-		if (isplayer1==true)
+		if (who==play1)
 		{
 			if (KEYDOWN('w') || KEYDOWN('W'))
 			{
@@ -148,7 +206,7 @@ bool game::getinput(_Out_ char &KEYDOWN, _In_ int leixing, bool isplayer1)
 			}
 			return true;
 		}
-		if (isplayer1==false)
+		if (who==play2)
 		{
 			if (KEYDOWN('i') || (KEYDOWN('I')))
 			{
@@ -193,6 +251,49 @@ bool game::getinput(_Out_ char &KEYDOWN, _In_ int leixing, bool isplayer1)
 				}
 			}
 		}
+		if (who==enemy1)
+		{
+			if (ch == '1')
+			{
+				if (tankmovecrash(UP, m_enemytank1))
+				{
+					m_enemytank1.tankmove(UP);
+				}
+			}
+			if (ch =='2')
+			{
+				if (tankmovecrash(DOWN, m_enemytank1))
+				{
+					m_enemytank1.tankmove(DOWN);
+				}
+			}
+			if (ch == '3')
+			{
+				if (tankmovecrash(LEFT, m_enemytank1))
+				{
+					m_enemytank1.tankmove(LEFT);
+				}
+			}
+			if (ch == '4')
+			{
+				if (tankmovecrash(RIGHT, m_enemytank1))
+				{
+					m_enemytank1.tankmove(RIGHT);
+				}
+			}
+			if (ch=='5')
+			{
+				bullet bullet_3;
+				if (createbullet(m_enemytank1, BULLET_MINE, bullet_3))
+				{
+					m_vecbullet2.push_back(bullet_3);
+					m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[3]);
+					setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, BULLET_ID_ENEMY);
+				}
+
+			}
+
+		}
 	}
 	else if (leixing==menu)
 	{
@@ -200,6 +301,7 @@ bool game::getinput(_Out_ char &KEYDOWN, _In_ int leixing, bool isplayer1)
 		{
 			issingle = true;
 			initsingleplayergame();
+			initenemytank();
 			singleplayerloop();
 		}
 		if (KEYDOWN('2'))

@@ -63,4 +63,9 @@
 extern char* bullet_pic[10];
 extern char* tank_pic[5];
 extern char* wall_pic[8];
+#define play1 1
+#define play2 2
+#define enemy1 3
+#define enemy2 4
+#define enemy3 5
 

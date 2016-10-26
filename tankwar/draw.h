@@ -14,6 +14,7 @@ public:
 	void drawmenu();
 	void drawplayinfo();
 	void drawtank(int ndir,int nx,int ny,char *center,char *frame);
+	void drawtank(int ndir, int nx, int ny, char *center, char *frame,WORD color);
 	void cleartank(int ndir,int nx,int ny);
 	void drawbullet(int nx,int ny,char *center);
 	void clearbullet(int nx,int ny);

@@ -12,6 +12,9 @@ public:
 	draw m_draw;
 	tank m_tank;
 	tank m_tank2;
+	tank m_enemytank1;
+	tank m_enemytank2;
+	tank m_enemytank3;
 	vector<bullet> m_vecbullet1;
 	vector<bullet> m_vecbullet2;
 	game();
@@ -21,12 +24,17 @@ public:
 	void initgamewindow();
 protected:
 	void initsingleplayergame();
-	bool singleplayerloop();
+	void initenemytank();
 	void initdoubleplayergame();
+	bool singleplayerloop();
 	bool doubleplayerloop();
 	bool player1time();
 	bool player2time();
-	bool getinput(_Out_ char &keydown,_In_ int leixing,bool);
+	char getdirfromrand(int rand);
+	bool enemy1time();
+	bool enemy2time();
+	bool enemy3time();
+	bool getinput(_Out_ char &ch,_In_ int leixing,_In_ int who);
 	bool bullet1time();
 	bool bullet2time();
 	bool tankmovecrash(DWORD dwdir,tank &tank_);

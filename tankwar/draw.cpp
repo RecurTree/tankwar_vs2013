@@ -199,6 +199,23 @@ void draw::drawtank(int ndir, int nx, int ny, char *center, char *frame)
 		}
 	}
 }
+void draw::drawtank(int ndir, int nx, int ny, char *center, char *frame,WORD color)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (1 == m_gntankshape[ndir][i][j])
+			{
+				writechar(nx - 1 + j, ny - 1 + i, frame, color);
+			}
+			else if (2 == m_gntankshape[ndir][i][j])
+			{
+				writechar(nx - 1 + j, ny - 1 + i, center, F_RED);
+			}
+		}
+	}
+}
 //
 void draw::cleartank(int ndir, int nx, int ny)
 {
