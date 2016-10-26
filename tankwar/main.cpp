@@ -2,6 +2,7 @@
 int main()
 {
 	game start;
-	start.initgamewindow();
+	//start.progameshow();
+	start.rungame();
 	return 0;
 }
