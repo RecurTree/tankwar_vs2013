@@ -26,38 +26,52 @@ void game::drawandselectmenu()
 }
 void game::initplayer1()
 {
-	tank::stank stank{ 0, 13, 37, 10, 1 };
+	tank::stank stank{ 0, 13, 37, 1, TANK_ID_MINE1 };
 	m_tank1.inittankinfo(stank);
 	m_draw.drawtank(0, 13, 37, "①", tank_pic[1], F_YELLOW);
 }
 void game::initplayer2()
 {
-	tank::stank stank2{ 0, 27, 37, 10, 1 };
+	tank::stank stank2{ 0, 27, 37, 1, TANK_ID_MINE2 };
 	m_tank2.inittankinfo(stank2);
 	m_draw.drawtank(0, 27, 37, "②", tank_pic[2], F_BLUE);
 }
 void game::initenemytank()
 {
 	srand((unsigned)time(NULL));
-	tank::stank enemy_3{ 1, 2, 2, 1, 1 };
+	initenemytank3();
+	initenemytank4();
+	initenemytank5();
+}
+void game::initenemytank3()
+{
+	tank::stank enemy_3{ 1, 2, 2, 1, TANK_ID_ENEMY3 };
 	m_enemytank3.inittankinfo(enemy_3);
 	m_draw.drawtank(1, 2, 2, "③", tank_pic[3], F_RED);
-	tank::stank enemy_4{ 1, 20, 2, 1, 1 };
+}
+void game::initenemytank4()
+{
+	tank::stank enemy_4{ 1, 20, 2, 1, TANK_ID_ENEMY4 };
 	m_enemytank4.inittankinfo(enemy_4);
 	m_draw.drawtank(1, 20, 2, "③", tank_pic[3], F_RED);
-	tank::stank enemy_5{ 1, 36, 2, 1, 1 };
+
+}
+void game::initenemytank5()
+{
+	tank::stank enemy_5{ 1, 36, 2, 1, TANK_ID_ENEMY5 };
 	m_enemytank5.inittankinfo(enemy_5);
 	m_draw.drawtank(1, 36, 2, "③", tank_pic[3], F_RED);
 }
+
 void game::initsingleplayergame()
 {
-	m_draw.drawmap();
+
 	initplayer1();
 	initenemytank();
 }
 void game::initdoubleplayergame()
 {
-	m_draw.drawmap();
+
 	initplayer1();
 	initplayer2();
 	initenemytank();
@@ -65,14 +79,31 @@ void game::initdoubleplayergame()
 }
 bool game::singleplayerloop()
 {
+
 	DWORD dwplayerbegin = GetTickCount(), dwbullebegin = GetTickCount(), dwplayerend, dwbulletend;
 	while (true)
 	{
+		if (m_tank1.m_obj.nblood==0)
+		{
+			initplayer1();
+		}
+		if (m_tank2.m_obj.nblood==0)
+		{
+			initplayer2();
+		}
+		if (m_enemytank3.m_obj.nblood==0)
+		{
+			
+		}
 		dwplayerend = GetTickCount();
 		if (dwplayerend - dwplayerbegin > 100)
 		{
 			dwplayerbegin = dwplayerend;
 			player1time();
+			for (size_t i = 0; i < m_vecEnemy.size(); i++)
+			{
+				enemytime(m_vecEnemy[i]);
+			}
 			enemy3time();
 			enemy4time();
 			enemy5time();
@@ -81,11 +112,14 @@ bool game::singleplayerloop()
 		if (dwbulletend-dwbullebegin>50)
 		{
 			dwbullebegin = dwbulletend;
+
 			bullet1time();
 			bullet3time();
 			bullet4time();
 			bullet5time();
 		}
+
+		//打印计分板
 	}
 	return false;
 }
@@ -133,7 +167,7 @@ bool game::player2time()
 {
 	char ch;
 	m_draw.cleartank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny);
-	setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, 0);
+	setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny,0);
 	getinput(ch, control,play2);
 	m_draw.drawtank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny, "②", tank_pic[2], F_BLUE);
 	setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, m_tank2.m_obj.nid);
@@ -161,8 +195,23 @@ char game::getdirfromrand(int rand)
 	}
 	return '5';
 }
+
+bool game::enemytime(tank & enemytank)
+{
+	char ch;
+	int random = rand() % 5 + 1;
+	ch = getdirfromrand(random);
+	m_draw.cleartank(enemytank.m_obj.ndirection, enemytank.m_obj.nx, enemytank.m_obj.ny);
+	setmapvaluetank(enemytank.m_obj.nx, enemytank.m_obj.ny, 0);
+	getinput(ch, control, enemy3);
+	m_draw.drawtank(enemytank.m_obj.ndirection, enemytank.m_obj.nx, enemytank.m_obj.ny, "③", tank_pic[3], F_RED);
+	setmapvaluetank(enemytank.m_obj.nx, enemytank.m_obj.ny, enemytank.m_obj.nid);
+	return true;
+}
+
 bool game::enemy3time()
 {
+	
 	char ch;
 	int random = rand() % 5+1;
 	ch = getdirfromrand(random);
@@ -233,12 +282,12 @@ bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
 			}
 			if (KEYDOWN(VK_SPACE))
 			{
-				bullet bullet_;
-				if (createbullet(m_tank1, BULLET_ID_MINE, bullet_))
+				bullet bullet_1;
+				if (createbullet(m_tank1, BULLET_ID_MINE1, bullet_1))
 				{
-					m_vecbullet1.push_back(bullet_);
-					m_draw.drawbullet(bullet_.m_obj.nx, bullet_.m_obj.ny, bullet_pic[1]);
-					setmapvaluebullet(bullet_.m_obj.nx, bullet_.m_obj.ny, BULLET_ID_MINE);
+					m_vecbullet1.push_back(bullet_1);
+					m_draw.drawbullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, bullet_pic[1]);
+					setmapvaluebullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, BULLET_ID_MINE1);
 				}
 			}
 			if (KEYDOWN(VK_ESCAPE))
@@ -284,11 +333,11 @@ bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
 			if (KEYDOWN('o') || KEYDOWN('O'))
 			{
 				bullet bullet_2;
-				if (createbullet(m_tank2, BULLET_MINE, bullet_2))
+				if (createbullet(m_tank2, BULLET_ID_MINE2, bullet_2))
 				{
 					m_vecbullet2.push_back(bullet_2);
 					m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[2]);
-					setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, BULLET_MINE);
+					setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, BULLET_ID_MINE2);
 				}
 			}
 		}
@@ -325,11 +374,11 @@ bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
 			if (ch == '5')
 			{
 				bullet bullet_3;
-				if (createbullet(m_enemytank3, BULLET_MINE, bullet_3))
+				if (createbullet(m_enemytank3, BULLET_ID_ENEMY3, bullet_3))
 				{
 					m_vecbullet3.push_back(bullet_3);
 					m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[3]);
-					setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, BULLET_ID_ENEMY);
+					setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, BULLET_ID_ENEMY3);
 				}
 			}
 		}
@@ -366,11 +415,11 @@ bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
 			if (ch == '5')
 			{
 				bullet bullet_4;
-				if (createbullet(m_enemytank4, BULLET_MINE, bullet_4))
+				if (createbullet(m_enemytank4, BULLET_ID_ENEMY4, bullet_4))
 				{
 					m_vecbullet4.push_back(bullet_4);
 					m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[3]);
-					setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, BULLET_ID_ENEMY);
+					setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, BULLET_ID_ENEMY4);
 				}
 			}
 		}
@@ -407,11 +456,11 @@ bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
 			if (ch == '5')
 			{
 				bullet bullet_5;
-				if (createbullet(m_enemytank5, BULLET_MINE, bullet_5))
+				if (createbullet(m_enemytank5, BULLET_ID_ENEMY5, bullet_5))
 				{
 					m_vecbullet5.push_back(bullet_5);
 					m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[3]);
-					setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, BULLET_ID_ENEMY);
+					setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, BULLET_ID_ENEMY5);
 				}
 			}
 		}
@@ -421,12 +470,14 @@ bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
 		if (KEYDOWN('1'))
 		{
 			issingle = true;
+			m_draw.drawmap();
 			initsingleplayergame();
 			singleplayerloop();
 		}
 		if (KEYDOWN('2'))
 		{
 			issingle = false;
+			m_draw.drawmap();
 			initdoubleplayergame();
 			doubleplayerloop();
 		}
@@ -450,7 +501,7 @@ bool game::bullet1time()
 		setmapvaluebullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, 0);
 		CPoint ptforward;		
 		bullet_1.getforwardpoint(ptforward);
-		if (bulletcrashall(ptforward))			
+		if (bulletcrashall(ptforward, bullet_1))
 		{
 			m_vecbullet1.erase(m_vecbullet1.begin() + i);
 			i--;
@@ -471,10 +522,10 @@ bool game::bullet2time()
 	{
 		bullet &bullet_2 = m_vecbullet2[i];
 		m_draw.clearbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny);
-		setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, 0);
+		setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny,0);
 		CPoint ptforward;
 		bullet_2.getforwardpoint(ptforward);
-		if (bulletcrashall(ptforward))
+		if (bulletcrashall(ptforward, bullet_2))
 		{
 			m_vecbullet2.erase(m_vecbullet2.begin() + i);
 			i--;
@@ -497,7 +548,7 @@ bool game::bullet3time()
 		setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, 0);
 		CPoint ptforward;
 		bullet_3.getforwardpoint(ptforward);
-		if (bulletcrashall(ptforward))
+		if (bulletcrashall(ptforward, bullet_3))
 		{
 			m_vecbullet3.erase(m_vecbullet3.begin() + i);
 			i--;
@@ -505,7 +556,7 @@ bool game::bullet3time()
 		else
 		{
 			bullet_3.bulletmove();
-			m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[4]);
+			m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[3]);
 			setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_3.m_obj.nid | OBJ_TYPE_BULLET);
 		}
 	}
@@ -520,7 +571,7 @@ bool game::bullet4time()
 		setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, 0);
 		CPoint ptforward;
 		bullet_4.getforwardpoint(ptforward);
-		if (bulletcrashall(ptforward))
+		if (bulletcrashall(ptforward, bullet_4))
 		{
 			m_vecbullet4.erase(m_vecbullet4.begin() + i);
 			i--;
@@ -528,7 +579,7 @@ bool game::bullet4time()
 		else
 		{
 			bullet_4.bulletmove();
-			m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[4]);
+			m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[3]);
 			setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_4.m_obj.nid | OBJ_TYPE_BULLET);
 		}
 	}
@@ -543,7 +594,7 @@ bool game::bullet5time()
 		setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, 0);
 		CPoint ptforward;
 		bullet_5.getforwardpoint(ptforward);
-		if (bulletcrashall(ptforward))
+		if (bulletcrashall(ptforward, bullet_5))
 		{
 			m_vecbullet5.erase(m_vecbullet5.begin() + i);
 			i--;
@@ -551,7 +602,7 @@ bool game::bullet5time()
 		else
 		{
 			bullet_5.bulletmove();
-			m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[4]);
+			m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[3]);
 			setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_5.m_obj.nid | OBJ_TYPE_BULLET);
 		}
 	}
@@ -596,13 +647,13 @@ bool game::createbullet(tank &tank_, unsigned int nid, bullet &bullet_)
 	CPoint pt[3] = {};
 	tank_.getthreepoint(pt);
 	bullet_ = { tank_.m_obj.ndirection, (unsigned int)pt[0].x, (unsigned int)pt[0].y, nid };
-	if (!bulletcrashall(pt[0]))
+	if (!bulletcrashall(pt[0],bullet_))
 	{
 		return true;
 	}
 	return false;
 }
-bool game::bulletcrashall(CPoint &ptbullet)
+bool game::bulletcrashall(CPoint &ptbullet,bullet &bullet_id)
 {
 	int &nvalue = m_draw.m_gnmap[ptbullet.y][ptbullet.x];
 	if (!nvalue)
@@ -615,7 +666,99 @@ bool game::bulletcrashall(CPoint &ptbullet)
 	}
 	else if (nvalue&OBJ_TYPE_TANK)
 	{
-		//子弹撞坦克的检测函数
+		bulletcrashtank(nvalue,ptbullet,bullet_id);
+	}
+	return true;
+}
+bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
+{
+	//坦克分两类，我方为1，地方为2
+	//子弹分 5类，我军1号，我军2号，敌军三号，敌军四号，敌军5号
+	if (nvalue&TANK_ENEMY)
+	{
+		if (bullet_id.m_obj.nid == BULLET_ID_MINE1 || bullet_id.m_obj.nid == BULLET_ID_MINE2)
+		{
+			if (nvalue==TANK_ID_ENEMY3)
+			{
+				if (m_enemytank3.m_obj.nblood!=0)
+				{
+					m_enemytank3.m_obj.nblood--;
+					return false;
+				}
+				else
+				{
+					m_draw.cleartank(m_enemytank3.m_obj.ndirection, m_enemytank3.m_obj.nx, m_enemytank3.m_obj.ny);
+					return true;
+				}
+			}
+			if (nvalue==TANK_ID_ENEMY4)
+			{
+				if (m_enemytank4.m_obj.nblood > 0)
+				{
+					m_enemytank4.m_obj.nblood--;
+					return false;
+				}
+				else
+				{
+					m_draw.cleartank(m_enemytank4.m_obj.ndirection, m_enemytank4.m_obj.nx, m_enemytank4.m_obj.ny);
+					return true;
+				}
+
+			}
+			if (nvalue==TANK_ID_ENEMY5)
+			{
+				if (m_enemytank5.m_obj.nblood != 0)
+				{
+					m_enemytank5.m_obj.nblood--;
+					return false;
+				}
+				else
+				{
+					m_draw.cleartank(m_enemytank5.m_obj.ndirection, m_enemytank5.m_obj.nx, m_enemytank5.m_obj.ny);
+					return true;
+				}
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if (nvalue&TANK_MINE)
+	{
+		if (bullet_id.m_obj.nid==BULLET_ID_ENEMY3||bullet_id.m_obj.nid==BULLET_ID_ENEMY4||bullet_id.m_obj.nid==BULLET_ID_ENEMY5)
+		{
+			if (nvalue==TANK_ID_MINE1)
+			{
+				if (m_tank1.m_obj.nblood!=0)
+				{
+					m_tank1.m_obj.nblood--;
+					return false;
+				}
+				else
+				{
+					m_draw.cleartank(m_tank1.m_obj.ndirection, m_tank1.m_obj.nx, m_tank1.m_obj.ny);
+					return true;
+				}
+			}
+			if (nvalue==TANK_ID_MINE2)
+			{
+				if (m_tank2.m_obj.nblood != 0)
+				{
+					m_tank2.m_obj.nblood--;
+					return false;
+				}
+				else
+				{
+					m_draw.cleartank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny);
+					return true;
+				}
+			}
+		}
+		else
+		{
+			return false;
+		}
 	}
 	return true;
 }

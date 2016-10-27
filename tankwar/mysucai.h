@@ -15,11 +15,26 @@
 #define WALL_ID_STO		0x00020000		//石墙
 #define WALL_ID_IRO		0x00040000		//铁墙
 #define WALL_ID_DIA		0x00080000		//不可摧毁
+
+#define TANK_MINE		0x00010000
+#define TANK_ENEMY		0x00020000
+#define TANK_ID_MINE1	0x20010100
+#define TANK_ID_MINE2	0x20010200
+#define TANK_ID_ENEMY3	0x20020300
+#define TANK_ID_ENEMY4	0x20020400
+#define TANK_ID_ENEMY5	0x20020500
+
+
 //定义子弹包含两个属性，第一位代表子弹，第二位代表子弹所属
-#define BULLET_MINE		0x40010000		// 玩家子弹 
-#define BULLET_ENEMY	0x40020000		// 敌方子弹
-#define BULLET_ID_MINE	0x00010000		// 1：我方子弹
-#define BULLET_ID_ENEMY	0x00020000		// 2：敌方子弹
+#define BULLET_MINE			0x40010000		// 玩家子弹 
+#define BULLET_ENEMY		0x40020000		// 敌方子 弹
+#define BULLET_ID_MINE1		0x00010100		// 1：我方子弹
+#define BULLET_ID_MINE2		0x00010200
+#define BULLET_ID_ENEMY3	0x00020300		// 2：敌方子弹
+#define BULLET_ID_ENEMY4	0x00020400		// 2：敌方子弹
+#define BULLET_ID_ENEMY5	0x00020500		// 2：敌方子弹
+
+
 // 字体颜色
 #define F_BLUE     FOREGROUND_BLUE      // 深蓝
 #define F_H_BLUE   0x0001|0x0008        // 亮蓝
@@ -63,9 +78,14 @@
 extern char* bullet_pic[10];
 extern char* tank_pic[5];
 extern char* wall_pic[8];
+
+
 #define play1 1
 #define play2 2
 #define enemy3 3
 #define enemy4 4
 #define enemy5 5
+
+#define playerid 1
+#define enemyid 2
 
