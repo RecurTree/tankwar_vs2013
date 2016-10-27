@@ -26,37 +26,44 @@ void game::drawandselectmenu()
 }
 void game::initplayer1()
 {
-	tank::stank stank{ 0, 13, 37, 1, TANK_ID_MINE1 };
+	tank::stank stank{ 0, 13, 37, 2, TANK_ID_MINE1 };
 	m_tank1.inittankinfo(stank);
 	//m_vecEnemy.push_back(m_tank1);
 	m_draw.drawtank(0, 13, 37, "¢Ù", tank_pic[1], F_YELLOW);
 }
 void game::initplayer2()
 {
-	tank::stank stank2{ 0, 27, 37, 1, TANK_ID_MINE2 };
+	tank::stank stank2{ 0, 27, 37, 2, TANK_ID_MINE2 };
 	m_tank2.inittankinfo(stank2);
 	m_draw.drawtank(0, 27, 37, "¢Ú", tank_pic[2], F_GREEN);
 }
-void game::initenemytank()
+void game::initenemytank(int nInit)
 {
 	tank::stank enemy[] = {
-		1, 2, 2, 1, TANK_ID_ENEMY3,
-		1, 20, 2, 1, TANK_ID_ENEMY4,
-		1, 36, 2, 1, TANK_ID_ENEMY5
+		1, 2, 2, 2, TANK_ID_ENEMY3,
+		1, 20, 2, 2, TANK_ID_ENEMY4,
+		1, 36, 2, 2, TANK_ID_ENEMY5
 	};
 	tank temp;
-	for (int i = 0; i < 3; i++)
+	if (nInit == 4)
 	{
-		temp.inittankinfo(enemy[i]);
-		m_vecEnemy.push_back(temp);
-		m_draw.drawtank(
-			enemy[i].ndirection,
-			enemy[i].nx,
-			enemy[i].ny,
-			"¢Û",
-			tank_pic[3],
-			F_RED);
+		for (int i = 0; i < 3; i++)
+		{
+			temp.inittankinfo(enemy[i]);
+			m_vecEnemy.push_back(temp);
+			m_draw.drawtank(
+				enemy[i].ndirection,
+				enemy[i].nx,
+				enemy[i].ny,
+				"¢Û",
+				tank_pic[3],
+				F_RED);
+		}
+		return;
 	}
+	temp.inittankinfo(enemy[nInit]);
+	m_vecEnemy[nInit] = temp;
+	
 }
 void game::initsingleplayergame()
 {
@@ -75,20 +82,7 @@ bool game::singleplayerloop()
 	DWORD dwplayerbegin = GetTickCount(), dwbullebegin = GetTickCount(), dwplayerend, dwbulletend;
 	while (true)
 	{
-		if (m_tank1.m_obj.nblood==0)
-		{
-			m_draw.cleartank(m_tank1.m_obj.ndirection, m_tank1.m_obj.nx, m_tank1.m_obj.ny);
-			setmapvaluetank(m_tank1.m_obj.nx, m_tank1.m_obj.ny, 0);
-			initplayer1();
-		}
 		
-		for (UINT i = 0; i < m_vecEnemy.size(); i++)
-		{
-			if (m_vecEnemy[i].m_obj.nblood==0)
-			{
-				initenemytank();  //Ò»Æð³äÖµ£»
-			}
-		}
 		dwplayerend = GetTickCount();
 		if (dwplayerend - dwplayerbegin > 100)
 		{
@@ -511,6 +505,7 @@ bool game::createbullet(tank &tank_, unsigned int nid, bullet &bullet_)
 	}
 	return false;
 }
+
 bool game::bulletcrashall(CPoint &ptbullet,bullet &bullet_id)
 {
 	int &nvalue = m_draw.m_gnmap[ptbullet.y][ptbullet.x];
@@ -544,8 +539,10 @@ bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
 				return true;
 			}
 			else
-			{
+			{			
 				m_draw.cleartank(m_vecEnemy[nId].m_obj.ndirection, m_vecEnemy[nId].m_obj.nx, m_vecEnemy[nId].m_obj.ny);
+				setmapvaluetank(m_vecEnemy[nId].m_obj.nx, m_vecEnemy[nId].m_obj.ny, 0);
+				initenemytank(nId);
 				return true;
 			}
 		}
@@ -571,6 +568,8 @@ bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
 				else
 				{
 					m_draw.cleartank(m_tank1.m_obj.ndirection, m_tank1.m_obj.nx, m_tank1.m_obj.ny);
+					setmapvaluetank(m_tank1.m_obj.nx, m_tank1.m_obj.ny, 0);
+					initplayer1();
 					return true;
 				}
 			}
@@ -584,6 +583,8 @@ bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
 				else
 				{
 					m_draw.cleartank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny);
+					setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, 0);
+					initplayer2();
 					return true;
 				}
 			}

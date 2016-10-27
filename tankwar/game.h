@@ -24,7 +24,7 @@ protected:
 	void drawandselectmenu();
 	void initplayer1();
 	void initplayer2();
-	void initenemytank();
+	void initenemytank(int nInit = 4);
 	void initsingleplayergame();
 	void initdoubleplayergame();
 	bool singleplayerloop();
