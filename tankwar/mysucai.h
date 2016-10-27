@@ -88,4 +88,5 @@ extern char* wall_pic[8];
 
 #define playerid 1
 #define enemyid 2
-
+extern int singlegame[5];
+extern int doublegame[5];

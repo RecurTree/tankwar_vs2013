@@ -3,6 +3,7 @@ int main()
 {
 	game start;
 	//start.progameshow();
+
 	start.rungame();
 	return 0;
 } 

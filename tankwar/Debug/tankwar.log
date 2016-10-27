@@ -1,5 +1,8 @@
-﻿生成启动时间为 2016/10/27 10:56:21。
+﻿生成启动时间为 2016/10/27 19:13:25。
+     1>项目“C:\Users\15PB-STUDENT\Documents\GitHub\1023\tankwar\tankwar.vcxproj”在节点 2 上(Clean 个目标)。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppClean.targets(76,5): warning : 文件“c:\users\15pb-student\documents\github\1023\debug\tankwar.bsc”正由另一进程使用，因此该进程无法访问此文件。
+     1>已完成生成项目“C:\Users\15PB-STUDENT\Documents\GitHub\1023\tankwar\tankwar.vcxproj”(Clean 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:00.00
+已用时间 00:00:00.05

@@ -1,5 +1,6 @@
 #include "mysucai.h"
 char* wall_pic[] = { "  ", "▓", "卍", "〓", "≈", "≡", "☆", "§" };
 char* tank_pic[] = { "  ", "■", "□", "▓", "○" };
-char* bullet_pic[] = { "  ", "○", "●", "¤", "◇", "◎", "↑", "↓", "←", "→"};
-//坦克形状
+char* bullet_pic[] = { "  ", "○", "●", "¤", "◇", "◎", "↑", "↓", "←", "→"};//坦克形状
+int singlegame[] = { play1, 0, enemy3, enemy4, enemy5 };
+int doublegame[] = { play1, play2, enemy3, enemy4, enemy5 };
