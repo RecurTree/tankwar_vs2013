@@ -1,20 +1,5 @@
-﻿生成启动时间为 2016/10/27 21:33:51。
-     1>项目“C:\Users\15PB-STUDENT\Documents\GitHub\1023\tankwar\tankwar.vcxproj”在节点 2 上(Build 个目标)。
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /FR"Debug\\" /Gd /TP /analyze- /errorReport:prompt game.cpp
-         game.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\15PB-STUDENT\Documents\GitHub\1023\Debug\tankwar.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\15PB-STUDENT\Documents\GitHub\1023\Debug\tankwar.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\15PB-STUDENT\Documents\GitHub\1023\Debug\tankwar.lib" /MACHINE:X86 Debug\bullet.obj
-         Debug\draw.obj
-         Debug\game.obj
-         Debug\main.obj
-         Debug\mysucai.obj
-         Debug\tank.obj
-         tankwar.vcxproj -> C:\Users\15PB-STUDENT\Documents\GitHub\1023\Debug\tankwar.exe
-       BscMake:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\bscmake.exe /nologo /o"C:\Users\15PB-STUDENT\Documents\GitHub\1023\Debug\tankwar.bsc" /n Debug\bullet.sbr Debug\draw.sbr Debug\game.sbr Debug\main.sbr Debug\mysucai.sbr Debug\tank.sbr
-     1>已完成生成项目“C:\Users\15PB-STUDENT\Documents\GitHub\1023\tankwar\tankwar.vcxproj”(Build 个目标)的操作。
+﻿生成启动时间为 2016/10/28 10:41:12。
 
 生成成功。
 
-已用时间 00:00:05.26
+已用时间 00:00:00.08

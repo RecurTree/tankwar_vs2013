@@ -163,7 +163,7 @@ void draw::drawmenu()
 		{
 			if (i==0||j==0||i==39||j==39)
 			{
-				writechar(i, j, "〓", F_WHITE);
+				writechar(j, i, "〓", F_WHITE);
 			}
 
 		}
@@ -177,8 +177,44 @@ void draw::drawmenu()
 	writechar(10, 16, "*                                     *", F_RED);
 	writechar(10, 17, "***************************************", F_RED);
 }
-void draw::drawplayinfo()
+void draw::drawscoringboard(int m_boardtype)
 {
+	for (int i = 0; i < 40; i++)
+	{
+		for (int j = 40; j < 50; j++)
+		{
+			if (i == 0 || i == 39 || j == 49)
+			{
+				writechar(j, i, "〓", F_WHITE);
+			}
+
+		}
+	}
+	if (m_boardtype==1)
+	{
+		writechar(41, 10, "  请按照提示  ", F_RED);
+		writechar(41, 11, "选择相应的选项", F_RED);
+	}
+	if (m_boardtype==2)
+	{
+		writechar(41, 10, "             ", F_RED);
+		writechar(41, 11, "             ", F_RED);
+		writechar(41, 10, "杀敌目标:", F_RED);
+		writechar(46, 10,  m_targets, F_RED);
+		writechar(41, 12, "PLAYER1:", F_RED);
+		writechar(46, 12, player1_score, F_RED);
+	}
+	if (m_boardtype == 3)
+	{
+		writechar(41, 10, "             ", F_RED);
+		writechar(41, 11, "             ", F_RED);
+		writechar(41, 10, "杀敌目标:", F_RED);
+		writechar(46, 10, m_targets, F_RED);
+		writechar(41, 12, "PLAYER1:", F_RED);
+		writechar(46, 12, player1_score, F_RED);
+		writechar(41, 14, "PLAYER2:", F_RED);
+		writechar(46, 14, player2_score, F_RED);
+	}
 
 }
 //画坦克

@@ -12,15 +12,18 @@ void game::rungame()
 {
 	//设置窗口大小和标题
 	m_draw.setwindowssize("Tank War v0.1", 100, 39);
+	m_draw.drawscoringboard(1);
 	drawandselectmenu();
+	
 }
 void game::drawandselectmenu()
 {
 	system("cls");
+	m_draw.drawmenu();
+	m_draw.drawscoringboard(1);
 	while (true)
 	{
 		char ch;
-		m_draw.drawmenu();
 		getinput(ch, menu, play1);
 	}
 }
@@ -58,20 +61,27 @@ void game::initenemytank(int nInit)
 				"③",
 				tank_pic[3],
 				F_RED);
+			//m_targets--;
 		}
 		return;
 	}
 	temp.inittankinfo(enemy[nInit]);
 	m_vecEnemy[nInit] = temp;
+	m_targets--;
+	m_draw.drawscoringboard(2);
 	
 }
 void game::initsingleplayergame()
 {
+	m_targets = 10;
+	m_draw.drawscoringboard(2);
 	initplayer1();
 	initenemytank();
 }
 void game::initdoubleplayergame()
 {
+	m_targets = 20;
+	m_draw.drawscoringboard(3);
 	initplayer1();
 	initplayer2();
 	initenemytank();
@@ -101,6 +111,7 @@ bool game::singleplayerloop()
 		
 		}
 		//打印计分板
+
 	}
 	return false;
 }
@@ -176,20 +187,6 @@ bool game::enemytime(tank & enemytank,int who)
 	setmapvaluetank(enemytank.m_obj.nx, enemytank.m_obj.ny, enemytank.m_obj.nid);
 	return true;
 }
-//
-//bool game::enemytime()
-//{
-//	
-//	char ch;
-//	int random = rand() % 5+1;
-//	ch = getdirfromrand(random);
-//	m_draw.cleartank(m_vecEnemy[0].m_obj.ndirection, m_vecEnemy[0].m_obj.nx, m_vecEnemy[0].m_obj.ny);
-//	setmapvaluetank(m_vecEnemy[0].m_obj.nx, m_vecEnemy[0].m_obj.ny, 0);
-//	getinput(ch, control, enemy3);
-//	m_draw.drawtank(m_vecEnemy[0].m_obj.ndirection, m_vecEnemy[0].m_obj.nx, m_vecEnemy[0].m_obj.ny, "③", tank_pic[3], F_RED);
-//	setmapvaluetank(m_vecEnemy[0].m_obj.nx, m_vecEnemy[0].m_obj.ny, m_vecEnemy[0].m_obj.nid);
-//	return true;
-//}
 bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
 {
 	if (leixing == control)
@@ -543,6 +540,24 @@ bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
 				m_draw.cleartank(m_vecEnemy[nId].m_obj.ndirection, m_vecEnemy[nId].m_obj.nx, m_vecEnemy[nId].m_obj.ny);
 				setmapvaluetank(m_vecEnemy[nId].m_obj.nx, m_vecEnemy[nId].m_obj.ny, 0);
 				initenemytank(nId);
+				if ((bullet_id.m_obj.nid == BULLET_ID_MINE1))
+				{
+					player1_score++;
+					if (issingle==true)
+					{
+						m_draw.drawscoringboard(2);
+					}
+					else
+					{
+						m_draw.drawscoringboard(3);
+					}
+					
+				}
+				if ((bullet_id.m_obj.nid == BULLET_ID_MINE2))
+				{
+					player2_score++;
+					m_draw.drawscoringboard(3);
+				}
 				return true;
 			}
 		}

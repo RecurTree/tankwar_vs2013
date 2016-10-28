@@ -12,6 +12,7 @@ public:
 	bool setwindowssize(char *pszwindowtitle,short nx,short ny);
 	void drawmap();
 	void drawmenu();
+	void drawscoringboard(int );
 	void drawplayinfo();
 	void drawtank(int ndir,int nx,int ny,char *center,char *frame);
 	void drawtank(int ndir, int nx, int ny, char *center, char *frame,WORD color);

@@ -78,6 +78,8 @@
 extern char* bullet_pic[10];
 extern char* tank_pic[5];
 extern char* wall_pic[8];
+extern int singlegame[5];
+extern int doublegame[5];
 
 
 #define play1 1
@@ -88,5 +90,10 @@ extern char* wall_pic[8];
 
 #define playerid 1
 #define enemyid 2
-extern int singlegame[5];
-extern int doublegame[5];
+
+
+
+extern int m_targets;
+extern int m_boardtype;   //1为菜单提示   2为 单人游戏计分板，3为双人游戏计分板
+extern int player1_score;
+extern int player2_score;
