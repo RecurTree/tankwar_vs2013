@@ -1,5 +1,6 @@
 #include "mysucai.h"
 #include "draw.h"
+#include "game.h"
 draw::draw()
 {
 }
@@ -177,6 +178,26 @@ void draw::drawmenu()
 	writechar(10, 16, "*                                     *", F_RED);
 	writechar(10, 17, "***************************************", F_RED);
 }
+void draw::drawmapborder()
+{
+	system("cls");
+	for (int i = 0; i < 40; i++)
+	{
+		for (int j = 0; j < 40; j++)
+		{
+			if (i == 0 || j == 0 || i == 39 || j == 39)
+			{
+				writechar(j, i, "〓", F_WHITE);
+			}
+			else
+			{
+				writechar(j, i, "  ", F_WHITE);
+			}
+			
+
+		}
+	}
+}
 void draw::drawscoringboard(int m_boardtype)
 {
 	for (int i = 0; i < 40; i++)
@@ -193,27 +214,39 @@ void draw::drawscoringboard(int m_boardtype)
 	if (m_boardtype==1)
 	{
 		writechar(41, 10, "  请按照提示  ", F_RED);
-		writechar(41, 11, "选择相应的选项", F_RED);
+		writechar(41, 12, "选择相应的选项", F_RED);
 	}
 	if (m_boardtype==2)
 	{
 		writechar(41, 10, "             ", F_RED);
-		writechar(41, 11, "             ", F_RED);
+		writechar(41, 12, "             ", F_RED);
+		writechar(41, 13, "             ", F_RED);
 		writechar(41, 10, "杀敌目标:", F_RED);
 		writechar(46, 10,  m_targets, F_RED);
 		writechar(41, 12, "PLAYER1:", F_RED);
 		writechar(46, 12, player1_score, F_RED);
+		writechar(41, 13, "P1 生命", F_RED);
+		writechar(46, 13, player1life, F_RED);
+
 	}
 	if (m_boardtype == 3)
 	{
 		writechar(41, 10, "             ", F_RED);
-		writechar(41, 11, "             ", F_RED);
+		writechar(41, 12, "             ", F_RED);
+		writechar(41, 13, "             ", F_RED);
+		writechar(41, 14, "             ", F_RED);
+		writechar(41, 15, "             ", F_RED);
 		writechar(41, 10, "杀敌目标:", F_RED);
 		writechar(46, 10, m_targets, F_RED);
 		writechar(41, 12, "PLAYER1:", F_RED);
-		writechar(46, 12, player1_score, F_RED);
+		writechar(46, 12, player1_score*500, F_RED);
+		writechar(41, 13, "P1 生命", F_RED);
+		writechar(46, 13, player1life, F_RED);
 		writechar(41, 14, "PLAYER2:", F_RED);
-		writechar(46, 14, player2_score, F_RED);
+		writechar(46, 14, player2_score*500, F_RED);
+		writechar(41, 15, "P1 生命", F_RED);
+		writechar(46, 15, player2life, F_RED);
+
 	}
 
 }
@@ -278,3 +311,21 @@ void draw::drawblank(int nx, int ny)
 {
 	writechar(nx, ny, " ", 0);
 }
+void draw::drawwin()
+{
+	drawmapborder();
+	writechar(10, 10, "***************************************", F_RED);
+	writechar(10, 11, "*         **  恭喜你获得胜利  **     *", F_RED);
+	writechar(10, 12, "*          **1*.**继*续*游*戏**       *", F_RED);
+	writechar(10, 13, "*          **2*.**双*人*游*戏**       *", F_RED);
+	writechar(10, 14, "*          **3*.**绘*制*地*图**       *", F_RED);
+	writechar(10, 15, "*          **4*.**退*出*游*戏**       *", F_RED);
+	writechar(10, 16, "*                                     *", F_RED);
+	writechar(10, 17, "***************************************", F_RED);
+	drawscoringboard(1);
+}
+void draw::drawlost()
+{
+
+}
+
