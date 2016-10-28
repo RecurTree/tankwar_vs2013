@@ -19,13 +19,13 @@ void game::rungame()
 void game::drawandselectmenu()
 {
 	system("cls");
-	m_draw.drawmenu();
+	m_draw.drawstartmenu();
 	m_draw.drawscoringboard(1);
 	while (true)
 	{
 		char ch;
-		getinput(ch, menu, play1);
-
+		//getinput(ch, menu, play1);
+		getmenuselect(ch);
 	}
 }
 void game::initplayer1()
@@ -44,13 +44,14 @@ void game::initplayer2()
 }
 void game::initenemytank(int nInit)
 {
-	if (m_targets==0)
+	if (m_targets==1)
 	{
 		char ch;
 		m_draw.drawwin();
 		while (1)
 		{
-			getinput(ch, menu, play1);
+			//getinput(ch, menu, play1);
+			getmenuselect(ch);
 		}
 		
 	}
@@ -163,7 +164,7 @@ bool game::runtime(tank &tank_,int who)
 	char ch;
 	m_draw.cleartank(tank_.m_obj.ndirection, tank_.m_obj.nx, tank_.m_obj.ny);
 	setmapvaluetank(tank_.m_obj.nx, tank_.m_obj.ny, 0);
-	getinput(ch, control,who);
+	getinput(ch,who);
 	m_draw.drawtank(tank_.m_obj.ndirection, tank_.m_obj.nx, tank_.m_obj.ny, "①", tank_pic[1], F_YELLOW);
 	setmapvaluetank(tank_.m_obj.nx, tank_.m_obj.ny, tank_.m_obj.nid);
 	return true;
@@ -198,257 +199,487 @@ bool game::enemytime(tank & enemytank,int who)
 	ch = getdirfromrand(random);
 	m_draw.cleartank(enemytank.m_obj.ndirection, enemytank.m_obj.nx, enemytank.m_obj.ny);
 	setmapvaluetank(enemytank.m_obj.nx, enemytank.m_obj.ny, 0);
-	getinput(ch, control, who);
+	getinput(ch, who);
 	m_draw.drawtank(enemytank.m_obj.ndirection, enemytank.m_obj.nx, enemytank.m_obj.ny, "③", tank_pic[3], F_RED);
 	setmapvaluetank(enemytank.m_obj.nx, enemytank.m_obj.ny, enemytank.m_obj.nid);
 	return true;
 }
-bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
+//bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
+//{
+//	if (leixing == control)
+//	{
+//		if (who==play1)
+//		{
+//			if (KEYDOWN('w') || KEYDOWN('W'))
+//			{
+//				if (tankmovecrash(UP, m_tank1))
+//				{
+//					m_tank1.tankmove(UP);
+//				}
+//			}
+//			if (KEYDOWN('S') || KEYDOWN('s'))
+//			{
+//				if (tankmovecrash(DOWN, m_tank1))
+//				{
+//					m_tank1.tankmove(DOWN);
+//				}
+//			}
+//			if (KEYDOWN('A') || KEYDOWN('a'))
+//			{
+//				if (tankmovecrash(LEFT, m_tank1))
+//				{
+//					m_tank1.tankmove(LEFT);
+//				}
+//			}
+//			if (KEYDOWN('D') || KEYDOWN('d'))
+//			{
+//				if (tankmovecrash(RIGHT, m_tank1))
+//				{
+//					m_tank1.tankmove(RIGHT);
+//				}
+//			}
+//			if (KEYDOWN(VK_SPACE))
+//			{
+//				bullet bullet_1;
+//				if (createbullet(m_tank1, BULLET_ID_MINE1, bullet_1))
+//				{
+//					m_vecbullet.push_back(bullet_1);
+//					m_draw.drawbullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, bullet_pic[1]);
+//					setmapvaluebullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, BULLET_ID_MINE1);
+//				}
+//			}
+//			if (KEYDOWN(VK_ESCAPE))
+//			{
+//				drawandselectmenu();
+//			}
+//			return true;
+//		}
+//		if (who==play2)
+//		{
+//			if (KEYDOWN('i') || (KEYDOWN('I')))
+//			{
+//				if (tankmovecrash(UP, m_tank2))
+//				{
+//					m_tank2.tankmove(UP);
+//				}
+//			}
+//			if (KEYDOWN('K') || KEYDOWN('k'))
+//			{
+//				if (tankmovecrash(DOWN, m_tank2))
+//				{
+//					m_tank2.tankmove(DOWN);
+//				}
+//			}
+//			if (KEYDOWN('j') || KEYDOWN('J'))
+//			{
+//				if (tankmovecrash(LEFT, m_tank2))
+//				{
+//					m_tank2.tankmove(LEFT);
+//				}
+//			}
+//			if (KEYDOWN('L') || KEYDOWN('l'))
+//			{
+//				if (tankmovecrash(RIGHT, m_tank2))
+//				{
+//					m_tank2.tankmove(RIGHT);
+//				}
+//			}
+//			if (KEYDOWN(VK_ESCAPE))
+//			{
+//				drawandselectmenu();
+//			}
+//			if (KEYDOWN('o') || KEYDOWN('O'))
+//			{
+//				bullet bullet_2;
+//				if (createbullet(m_tank2, BULLET_ID_MINE2, bullet_2))
+//				{
+//					m_vecbullet.push_back(bullet_2);
+//					m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[2]);
+//					setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, BULLET_ID_MINE2);
+//				}
+//			}
+//		}
+//		if (who == enemy3)
+//		{
+//			if (ch == '1')
+//			{
+//				if (tankmovecrash(UP, m_vecEnemy[0]))
+//				{
+//					m_vecEnemy[0].tankmove(UP);
+//				}
+//			}
+//			if (ch == '2')
+//			{
+//				if (tankmovecrash(DOWN, m_vecEnemy[0]))
+//				{
+//					m_vecEnemy[0].tankmove(DOWN);
+//				}
+//			}
+//			if (ch == '3')
+//			{
+//				if (tankmovecrash(LEFT, m_vecEnemy[0]))
+//				{
+//					m_vecEnemy[0].tankmove(LEFT);
+//				}
+//			}
+//			if (ch == '4')
+//			{
+//				if (tankmovecrash(RIGHT, m_vecEnemy[0]))
+//				{
+//					m_vecEnemy[0].tankmove(RIGHT);
+//				}
+//			}
+//			if (ch == '5')
+//			{
+//				bullet bullet_3;
+//				if (createbullet(m_vecEnemy[0], BULLET_ID_ENEMY3, bullet_3))
+//				{
+//					m_vecbullet.push_back(bullet_3);
+//					m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[3]);
+//					setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, BULLET_ID_ENEMY3);
+//				}
+//			}
+//		}
+//		if (who == enemy4)
+//		{
+//			if (ch == '1')
+//			{
+//				if (tankmovecrash(UP, m_vecEnemy[1]))
+//				{
+//					m_vecEnemy[1].tankmove(UP);
+//				}
+//			}
+//			if (ch == '2')
+//			{
+//				if (tankmovecrash(DOWN, m_vecEnemy[1]))
+//				{
+//					m_vecEnemy[1].tankmove(DOWN);
+//				}
+//			}
+//			if (ch == '3')
+//			{
+//				if (tankmovecrash(LEFT, m_vecEnemy[1]))
+//				{
+//					m_vecEnemy[1].tankmove(LEFT);
+//				}
+//			}
+//			if (ch == '4')
+//			{
+//				if (tankmovecrash(RIGHT, m_vecEnemy[1]))
+//				{
+//					m_vecEnemy[1].tankmove(RIGHT);
+//				}
+//			}
+//			if (ch == '5')
+//			{
+//				bullet bullet_4;
+//				if (createbullet(m_vecEnemy[1], BULLET_ID_ENEMY4, bullet_4))
+//				{
+//					m_vecbullet.push_back(bullet_4);
+//					m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[3]);
+//					setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, BULLET_ID_ENEMY4);
+//				}
+//			}
+//		}
+//		if (who == enemy5)
+//		{
+//			if (ch == '1')
+//			{
+//				if (tankmovecrash(UP, m_vecEnemy[2]))
+//				{
+//					m_vecEnemy[2].tankmove(UP);
+//				}
+//			}
+//			if (ch == '2')
+//			{
+//				if (tankmovecrash(DOWN, m_vecEnemy[2]))
+//				{
+//					m_vecEnemy[2].tankmove(DOWN);
+//				}
+//			}
+//			if (ch == '3')
+//			{
+//				if (tankmovecrash(LEFT, m_vecEnemy[2]))
+//				{
+//					m_vecEnemy[2].tankmove(LEFT);
+//				}
+//			}
+//			if (ch == '4')
+//			{
+//				if (tankmovecrash(RIGHT, m_vecEnemy[2]))
+//				{
+//					m_vecEnemy[2].tankmove(RIGHT);
+//				}
+//			}
+//			if (ch == '5')
+//			{
+//				bullet bullet_5;
+//				if (createbullet(m_vecEnemy[2], BULLET_ID_ENEMY5, bullet_5))
+//				{
+//					m_vecbullet.push_back(bullet_5);
+//					m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[3]);
+//					setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, BULLET_ID_ENEMY5);
+//				}
+//			}
+//		}
+//	}
+//	else if (leixing==menu)
+//	{
+
+//	}
+//	return true;
+//}
+//获取来自who变量的输入
+bool game::getinput(_Out_ char &ch, _In_ int who)
 {
-	if (leixing == control)
+	if (who == play1)
 	{
-		if (who==play1)
+		if (KEYDOWN('w') || KEYDOWN('W'))
 		{
-			if (KEYDOWN('w') || KEYDOWN('W'))
+			if (tankmovecrash(UP, m_tank1))
 			{
-				if (tankmovecrash(UP, m_tank1))
-				{
-					m_tank1.tankmove(UP);
-				}
-			}
-			if (KEYDOWN('S') || KEYDOWN('s'))
-			{
-				if (tankmovecrash(DOWN, m_tank1))
-				{
-					m_tank1.tankmove(DOWN);
-				}
-			}
-			if (KEYDOWN('A') || KEYDOWN('a'))
-			{
-				if (tankmovecrash(LEFT, m_tank1))
-				{
-					m_tank1.tankmove(LEFT);
-				}
-			}
-			if (KEYDOWN('D') || KEYDOWN('d'))
-			{
-				if (tankmovecrash(RIGHT, m_tank1))
-				{
-					m_tank1.tankmove(RIGHT);
-				}
-			}
-			if (KEYDOWN(VK_SPACE))
-			{
-				bullet bullet_1;
-				if (createbullet(m_tank1, BULLET_ID_MINE1, bullet_1))
-				{
-					m_vecbullet.push_back(bullet_1);
-					m_draw.drawbullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, bullet_pic[1]);
-					setmapvaluebullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, BULLET_ID_MINE1);
-				}
-			}
-			if (KEYDOWN(VK_ESCAPE))
-			{
-				drawandselectmenu();
-			}
-			return true;
-		}
-		if (who==play2)
-		{
-			if (KEYDOWN('i') || (KEYDOWN('I')))
-			{
-				if (tankmovecrash(UP, m_tank2))
-				{
-					m_tank2.tankmove(UP);
-				}
-			}
-			if (KEYDOWN('K') || KEYDOWN('k'))
-			{
-				if (tankmovecrash(DOWN, m_tank2))
-				{
-					m_tank2.tankmove(DOWN);
-				}
-			}
-			if (KEYDOWN('j') || KEYDOWN('J'))
-			{
-				if (tankmovecrash(LEFT, m_tank2))
-				{
-					m_tank2.tankmove(LEFT);
-				}
-			}
-			if (KEYDOWN('L') || KEYDOWN('l'))
-			{
-				if (tankmovecrash(RIGHT, m_tank2))
-				{
-					m_tank2.tankmove(RIGHT);
-				}
-			}
-			if (KEYDOWN(VK_ESCAPE))
-			{
-				drawandselectmenu();
-			}
-			if (KEYDOWN('o') || KEYDOWN('O'))
-			{
-				bullet bullet_2;
-				if (createbullet(m_tank2, BULLET_ID_MINE2, bullet_2))
-				{
-					m_vecbullet.push_back(bullet_2);
-					m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[2]);
-					setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, BULLET_ID_MINE2);
-				}
+				m_tank1.tankmove(UP);
 			}
 		}
-		if (who == enemy3)
+		if (KEYDOWN('S') || KEYDOWN('s'))
 		{
-			if (ch == '1')
+			if (tankmovecrash(DOWN, m_tank1))
 			{
-				if (tankmovecrash(UP, m_vecEnemy[0]))
-				{
-					m_vecEnemy[0].tankmove(UP);
-				}
-			}
-			if (ch == '2')
-			{
-				if (tankmovecrash(DOWN, m_vecEnemy[0]))
-				{
-					m_vecEnemy[0].tankmove(DOWN);
-				}
-			}
-			if (ch == '3')
-			{
-				if (tankmovecrash(LEFT, m_vecEnemy[0]))
-				{
-					m_vecEnemy[0].tankmove(LEFT);
-				}
-			}
-			if (ch == '4')
-			{
-				if (tankmovecrash(RIGHT, m_vecEnemy[0]))
-				{
-					m_vecEnemy[0].tankmove(RIGHT);
-				}
-			}
-			if (ch == '5')
-			{
-				bullet bullet_3;
-				if (createbullet(m_vecEnemy[0], BULLET_ID_ENEMY3, bullet_3))
-				{
-					m_vecbullet.push_back(bullet_3);
-					m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[3]);
-					setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, BULLET_ID_ENEMY3);
-				}
+				m_tank1.tankmove(DOWN);
 			}
 		}
-		if (who == enemy4)
+		if (KEYDOWN('A') || KEYDOWN('a'))
 		{
-			if (ch == '1')
+			if (tankmovecrash(LEFT, m_tank1))
 			{
-				if (tankmovecrash(UP, m_vecEnemy[1]))
-				{
-					m_vecEnemy[1].tankmove(UP);
-				}
-			}
-			if (ch == '2')
-			{
-				if (tankmovecrash(DOWN, m_vecEnemy[1]))
-				{
-					m_vecEnemy[1].tankmove(DOWN);
-				}
-			}
-			if (ch == '3')
-			{
-				if (tankmovecrash(LEFT, m_vecEnemy[1]))
-				{
-					m_vecEnemy[1].tankmove(LEFT);
-				}
-			}
-			if (ch == '4')
-			{
-				if (tankmovecrash(RIGHT, m_vecEnemy[1]))
-				{
-					m_vecEnemy[1].tankmove(RIGHT);
-				}
-			}
-			if (ch == '5')
-			{
-				bullet bullet_4;
-				if (createbullet(m_vecEnemy[1], BULLET_ID_ENEMY4, bullet_4))
-				{
-					m_vecbullet.push_back(bullet_4);
-					m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[3]);
-					setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, BULLET_ID_ENEMY4);
-				}
+				m_tank1.tankmove(LEFT);
 			}
 		}
-		if (who == enemy5)
+		if (KEYDOWN('D') || KEYDOWN('d'))
 		{
-			if (ch == '1')
+			if (tankmovecrash(RIGHT, m_tank1))
 			{
-				if (tankmovecrash(UP, m_vecEnemy[2]))
-				{
-					m_vecEnemy[2].tankmove(UP);
-				}
+				m_tank1.tankmove(RIGHT);
 			}
-			if (ch == '2')
+		}
+		if (KEYDOWN(VK_SPACE))
+		{
+			bullet bullet_1;
+			if (createbullet(m_tank1, BULLET_ID_MINE1, bullet_1))
 			{
-				if (tankmovecrash(DOWN, m_vecEnemy[2]))
-				{
-					m_vecEnemy[2].tankmove(DOWN);
-				}
+				m_vecbullet.push_back(bullet_1);
+				m_draw.drawbullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, bullet_pic[1]);
+				setmapvaluebullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, BULLET_ID_MINE1);
 			}
-			if (ch == '3')
+		}
+		if (KEYDOWN(VK_ESCAPE))
+		{
+			//drawandselectmenu();
+		}
+		return true;
+	}
+	if (who == play2)
+	{
+		if (KEYDOWN('i') || (KEYDOWN('I')))
+		{
+			if (tankmovecrash(UP, m_tank2))
 			{
-				if (tankmovecrash(LEFT, m_vecEnemy[2]))
-				{
-					m_vecEnemy[2].tankmove(LEFT);
-				}
+				m_tank2.tankmove(UP);
 			}
-			if (ch == '4')
+		}
+		if (KEYDOWN('K') || KEYDOWN('k'))
+		{
+			if (tankmovecrash(DOWN, m_tank2))
 			{
-				if (tankmovecrash(RIGHT, m_vecEnemy[2]))
-				{
-					m_vecEnemy[2].tankmove(RIGHT);
-				}
+				m_tank2.tankmove(DOWN);
 			}
-			if (ch == '5')
+		}
+		if (KEYDOWN('j') || KEYDOWN('J'))
+		{
+			if (tankmovecrash(LEFT, m_tank2))
 			{
-				bullet bullet_5;
-				if (createbullet(m_vecEnemy[2], BULLET_ID_ENEMY5, bullet_5))
-				{
-					m_vecbullet.push_back(bullet_5);
-					m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[3]);
-					setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, BULLET_ID_ENEMY5);
-				}
+				m_tank2.tankmove(LEFT);
+			}
+		}
+		if (KEYDOWN('L') || KEYDOWN('l'))
+		{
+			if (tankmovecrash(RIGHT, m_tank2))
+			{
+				m_tank2.tankmove(RIGHT);
+			}
+		}
+		if (KEYDOWN(VK_ESCAPE))
+		{
+			//drawandselectmenu();
+		}
+		if (KEYDOWN('o') || KEYDOWN('O'))
+		{
+			bullet bullet_2;
+			if (createbullet(m_tank2, BULLET_ID_MINE2, bullet_2))
+			{
+				m_vecbullet.push_back(bullet_2);
+				m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[2]);
+				setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, BULLET_ID_MINE2);
 			}
 		}
 	}
-	else if (leixing==menu)
+	if (who == enemy3)
 	{
-		if (KEYDOWN('1'))
+		if (ch == '1')
 		{
-			issingle = true;
-			m_draw.drawmap();
-			initsingleplayergame();
-			singleplayerloop();
+			if (tankmovecrash(UP, m_vecEnemy[0]))
+			{
+				m_vecEnemy[0].tankmove(UP);
+			}
 		}
-		if (KEYDOWN('2'))
+		if (ch == '2')
 		{
-			issingle = false;
-			m_draw.drawmap();
-			initdoubleplayergame();
-			doubleplayerloop();
+			if (tankmovecrash(DOWN, m_vecEnemy[0]))
+			{
+				m_vecEnemy[0].tankmove(DOWN);
+			}
 		}
-		if (KEYDOWN('3'))
+		if (ch == '3')
 		{
-			
+			if (tankmovecrash(LEFT, m_vecEnemy[0]))
+			{
+				m_vecEnemy[0].tankmove(LEFT);
+			}
 		}
-		if (KEYDOWN('4'))
+		if (ch == '4')
 		{
-			exit(0);
+			if (tankmovecrash(RIGHT, m_vecEnemy[0]))
+			{
+				m_vecEnemy[0].tankmove(RIGHT);
+			}
+		}
+		if (ch == '5')
+		{
+			bullet bullet_3;
+			if (createbullet(m_vecEnemy[0], BULLET_ID_ENEMY3, bullet_3))
+			{
+				m_vecbullet.push_back(bullet_3);
+				m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[3]);
+				setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, BULLET_ID_ENEMY3);
+			}
+		}
+	}
+	if (who == enemy4)
+	{
+		if (ch == '1')
+		{
+			if (tankmovecrash(UP, m_vecEnemy[1]))
+			{
+				m_vecEnemy[1].tankmove(UP);
+			}
+		}
+		if (ch == '2')
+		{
+			if (tankmovecrash(DOWN, m_vecEnemy[1]))
+			{
+				m_vecEnemy[1].tankmove(DOWN);
+			}
+		}
+		if (ch == '3')
+		{
+			if (tankmovecrash(LEFT, m_vecEnemy[1]))
+			{
+				m_vecEnemy[1].tankmove(LEFT);
+			}
+		}
+		if (ch == '4')
+		{
+			if (tankmovecrash(RIGHT, m_vecEnemy[1]))
+			{
+				m_vecEnemy[1].tankmove(RIGHT);
+			}
+		}
+		if (ch == '5')
+		{
+			bullet bullet_4;
+			if (createbullet(m_vecEnemy[1], BULLET_ID_ENEMY4, bullet_4))
+			{
+				m_vecbullet.push_back(bullet_4);
+				m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[3]);
+				setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, BULLET_ID_ENEMY4);
+			}
+		}
+	}
+	if (who == enemy5)
+	{
+		if (ch == '1')
+		{
+			if (tankmovecrash(UP, m_vecEnemy[2]))
+			{
+				m_vecEnemy[2].tankmove(UP);
+			}
+		}
+		if (ch == '2')
+		{
+			if (tankmovecrash(DOWN, m_vecEnemy[2]))
+			{
+				m_vecEnemy[2].tankmove(DOWN);
+			}
+		}
+		if (ch == '3')
+		{
+			if (tankmovecrash(LEFT, m_vecEnemy[2]))
+			{
+				m_vecEnemy[2].tankmove(LEFT);
+			}
+		}
+		if (ch == '4')
+		{
+			if (tankmovecrash(RIGHT, m_vecEnemy[2]))
+			{
+				m_vecEnemy[2].tankmove(RIGHT);
+			}
+		}
+		if (ch == '5')
+		{
+			bullet bullet_5;
+			if (createbullet(m_vecEnemy[2], BULLET_ID_ENEMY5, bullet_5))
+			{
+				m_vecbullet.push_back(bullet_5);
+				m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[3]);
+				setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, BULLET_ID_ENEMY5);
+			}
 		}
 	}
 	return true;
 }
+//获取开始菜单的输入信息
+bool game::getstartmenuselect(_Out_ char &)
+{
+	if (KEYDOWN('1'))
+	{
+		issingle = true;
+		m_draw.drawmap();
+		initsingleplayergame();
+		singleplayerloop();
+	}
+	if (KEYDOWN('2'))
+	{
+		issingle = false;
+		m_draw.drawmap();
+		initdoubleplayergame();
+		doubleplayerloop();
+	}
+	if (KEYDOWN('3'))
+	{
+
+	}
+	if (KEYDOWN('4'))
+	{
+		exit(0);
+	}
+	return true;
+}
+//获取来自win菜单的输入
+bool 
+//获取来自暂停菜单的输入
+bool
+//获取来自lost菜单的输入
 bool game::bullettime()
 {
 	for (UINT i = 0; i < m_vecbullet.size(); i++)
@@ -462,7 +693,6 @@ bool game::bullettime()
 		{
 			m_vecbullet.erase(m_vecbullet.begin() + i);
 			i--;
-			
 		}
 		else
 		{
@@ -550,11 +780,11 @@ bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
 	{
 		if (bullet_id.m_obj.nid == BULLET_ID_MINE1 || bullet_id.m_obj.nid == BULLET_ID_MINE2)
 		{
-			int nId = nvalue & 0x0F00;// 300 400 500
-			nId >>= 8; // 15 16
+			int nId = nvalue & 0x0F00;
+			nId >>= 8; 
 			nId -= 3;
 
-			if (m_vecEnemy[nId].m_obj.nblood != 0)//  0 -> nId
+			if (m_vecEnemy[nId].m_obj.nblood != 0)
 			{
 				m_vecEnemy[nId].m_obj.nblood--;
 				return true;

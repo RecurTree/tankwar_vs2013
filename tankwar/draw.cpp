@@ -156,19 +156,9 @@ void draw::drawmap()
 		}
 	}
 }
-void draw::drawmenu()
+void draw::drawstartmenu()
 {
-	for (int i = 0; i < 40; i++)
-	{
-		for (int j = 0; j < 40; j++)
-		{
-			if (i==0||j==0||i==39||j==39)
-			{
-				writechar(j, i, "〓", F_WHITE);
-			}
-
-		}
-	}
+	drawmapborder();
 	writechar(10, 10, "***************************************", F_RED);
 	writechar(10, 11, "*                                     *", F_RED);
 	writechar(10, 12, "*          **1*.**开*始*游*戏**       *", F_RED);
@@ -178,6 +168,7 @@ void draw::drawmenu()
 	writechar(10, 16, "*                                     *", F_RED);
 	writechar(10, 17, "***************************************", F_RED);
 }
+//画出地图边框
 void draw::drawmapborder()
 {
 	system("cls");
@@ -198,6 +189,7 @@ void draw::drawmapborder()
 		}
 	}
 }
+//画计分板
 void draw::drawscoringboard(int m_boardtype)
 {
 	for (int i = 0; i < 40; i++)
@@ -251,23 +243,6 @@ void draw::drawscoringboard(int m_boardtype)
 
 }
 //画坦克
-void draw::drawtank(int ndir, int nx, int ny, char *center, char *frame)
-{
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			if (1==m_gntankshape[ndir][i][j])
-			{
-				writechar(nx-1+j,ny-1+i,frame,F_H_YELLOW);
-			}
-			else if (2 == m_gntankshape[ndir][i][j])
-			{
-				writechar(nx - 1 + j, ny - 1 + i, center, F_RED);
-			}
-		}
-	}
-}
 void draw::drawtank(int ndir, int nx, int ny, char *center, char *frame,WORD color)
 {
 	for (int i = 0; i < 3; i++)
@@ -285,7 +260,7 @@ void draw::drawtank(int ndir, int nx, int ny, char *center, char *frame,WORD col
 		}
 	}
 }
-//
+//清除坦克
 void draw::cleartank(int ndir, int nx, int ny)
 {
 	for (int i = 0; i < 3; i++)
@@ -299,33 +274,46 @@ void draw::cleartank(int ndir, int nx, int ny)
 		}
 	}
 }
+//画子弹
 void draw::drawbullet(int nx, int ny,char *center)
 {
 	writechar(nx, ny, center, F_PURPLE);
 }
+//清除子弹
 void draw::clearbullet(int nx, int ny)
 {
 	writechar(nx, ny, " ", 0);
 }
+//清除一个点
 void draw::drawblank(int nx, int ny)
 {
 	writechar(nx, ny, " ", 0);
 }
-void draw::drawwin()
+//画游戏获胜
+void draw::drawwinmenu()
 {
 	drawmapborder();
 	writechar(10, 10, "***************************************", F_RED);
-	writechar(10, 11, "*         **  恭喜你获得胜利  **     *", F_RED);
-	writechar(10, 12, "*          **1*.**继*续*游*戏**       *", F_RED);
-	writechar(10, 13, "*          **2*.**双*人*游*戏**       *", F_RED);
-	writechar(10, 14, "*          **3*.**绘*制*地*图**       *", F_RED);
-	writechar(10, 15, "*          **4*.**退*出*游*戏**       *", F_RED);
+	writechar(10, 11, "*         **  恭喜你获得胜利  **      *", F_RED);
+	writechar(10, 12, "*                                     *", F_RED);
+	writechar(10, 13, "*          **1*.**继*续*游*戏**       *", F_RED);
+	writechar(10, 14, "*                                     *", F_RED);
+	writechar(10, 15, "*          **0*.**退*出*游*戏**       *", F_RED);
 	writechar(10, 16, "*                                     *", F_RED);
 	writechar(10, 17, "***************************************", F_RED);
 	drawscoringboard(1);
 }
-void draw::drawlost()
+void draw::drawlostmenu()
 {
-
+	drawmapborder();
+	writechar(10, 10, "***************************************", F_RED);
+	writechar(10, 11, "*         **  很抱歉，你输了  **       *", F_RED);
+	writechar(10, 12, "*                                     *", F_RED);
+	writechar(10, 13, "*          **1*.**重*新*游*戏**       *", F_RED);
+	writechar(10, 14, "*                                     *", F_RED);
+	writechar(10, 15, "*          **0*.**退*出*游*戏**       *", F_RED);
+	writechar(10, 16, "*                                     *", F_RED);
+	writechar(10, 17, "***************************************", F_RED);
+	drawscoringboard(1);
 }
 

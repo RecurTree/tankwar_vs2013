@@ -34,7 +34,8 @@ protected:
 	bool player2time();
 	char getdirfromrand(int rand);
 	bool enemytime(tank &,int );
-	bool getinput(_Out_ char &ch,_In_ int leixing,_In_ int who);
+	bool getinput(_Out_ char &ch, _In_ int who);
+	bool getstartmenuselect(_Out_ char &ch);
 	bool bullettime();
 	bool tankmovecrash(DWORD dwdir,tank &tank_);
 	void setmapvaluetank(int x, int y, int nvalue);
