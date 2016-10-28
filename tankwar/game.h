@@ -2,6 +2,8 @@
 #include "bullet.h"
 #include "draw.h"
 #include "tank.h"
+#include <mmsystem.h>//WINDOWS的基本WAV文件播放
+#pragma comment(lib,"WinMM.Lib")
 #include<vector>
 using std::vector;
 
@@ -36,6 +38,9 @@ protected:
 	bool enemytime(tank &,int );
 	bool getinput(_Out_ char &ch, _In_ int who);
 	bool getstartmenuselect(_Out_ char &ch);
+	bool getstopmenuselect(_Out_ char &ch);
+	bool getlostmenuselect(_Out_ char &ch);
+	bool getwinmenuselect(_Out_ char &ch);
 	bool bullettime();
 	bool tankmovecrash(DWORD dwdir,tank &tank_);
 	void setmapvaluetank(int x, int y, int nvalue);

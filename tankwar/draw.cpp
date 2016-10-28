@@ -3,6 +3,7 @@
 #include "game.h"
 draw::draw()
 {
+	memcpy_s(m_gnmapCpy, sizeof(int) * 40 * 40, m_gnmap, sizeof(int) * 40 * 40);
 }
 draw::~draw()
 {
@@ -171,7 +172,7 @@ void draw::drawstartmenu()
 //画出地图边框
 void draw::drawmapborder()
 {
-	system("cls");
+
 	for (int i = 0; i < 40; i++)
 	{
 		for (int j = 0; j < 40; j++)
@@ -184,8 +185,6 @@ void draw::drawmapborder()
 			{
 				writechar(j, i, "  ", F_WHITE);
 			}
-			
-
 		}
 	}
 }
@@ -205,6 +204,11 @@ void draw::drawscoringboard(int m_boardtype)
 	}
 	if (m_boardtype==1)
 	{
+		writechar(41, 10, "             ", F_RED);
+		writechar(41, 12, "             ", F_RED);
+		writechar(41, 13, "             ", F_RED);
+		writechar(41, 14, "             ", F_RED);
+		writechar(41, 15, "             ", F_RED);
 		writechar(41, 10, "  请按照提示  ", F_RED);
 		writechar(41, 12, "选择相应的选项", F_RED);
 	}
@@ -213,10 +217,12 @@ void draw::drawscoringboard(int m_boardtype)
 		writechar(41, 10, "             ", F_RED);
 		writechar(41, 12, "             ", F_RED);
 		writechar(41, 13, "             ", F_RED);
+		writechar(41, 14, "             ", F_RED);
+		writechar(41, 15, "             ", F_RED);
 		writechar(41, 10, "杀敌目标:", F_RED);
 		writechar(46, 10,  m_targets, F_RED);
 		writechar(41, 12, "PLAYER1:", F_RED);
-		writechar(46, 12, player1_score, F_RED);
+		writechar(46, 12, player1_score*500, F_RED);
 		writechar(41, 13, "P1 生命", F_RED);
 		writechar(46, 13, player1life, F_RED);
 
@@ -292,9 +298,10 @@ void draw::drawblank(int nx, int ny)
 //画游戏获胜
 void draw::drawwinmenu()
 {
+	PlaySound(TEXT("res\\win.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 	drawmapborder();
 	writechar(10, 10, "***************************************", F_RED);
-	writechar(10, 11, "*         **  恭喜你获得胜利  **      *", F_RED);
+   	writechar(10, 11, "*         **  恭喜你获得胜利  **      *", F_RED);
 	writechar(10, 12, "*                                     *", F_RED);
 	writechar(10, 13, "*          **1*.**继*续*游*戏**       *", F_RED);
 	writechar(10, 14, "*                                     *", F_RED);
@@ -305,11 +312,25 @@ void draw::drawwinmenu()
 }
 void draw::drawlostmenu()
 {
+	PlaySound(TEXT("res\\lost.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 	drawmapborder();
 	writechar(10, 10, "***************************************", F_RED);
 	writechar(10, 11, "*         **  很抱歉，你输了  **       *", F_RED);
 	writechar(10, 12, "*                                     *", F_RED);
 	writechar(10, 13, "*          **1*.**重*新*游*戏**       *", F_RED);
+	writechar(10, 14, "*                                     *", F_RED);
+	writechar(10, 15, "*          **0*.**退*出*游*戏**       *", F_RED);
+	writechar(10, 16, "*                                     *", F_RED);
+	writechar(10, 17, "***************************************", F_RED);
+	drawscoringboard(1);
+}
+void draw::drawstopmenu()
+{
+	drawmapborder();
+	writechar(10, 10, "***************************************", F_RED);
+	writechar(10, 11, "*         **    游戏暂停中    **       *", F_RED);
+	writechar(10, 12, "*                                     *", F_RED);
+	writechar(10, 13, "*          **1*.**继*续*游*戏**       *", F_RED);
 	writechar(10, 14, "*                                     *", F_RED);
 	writechar(10, 15, "*          **0*.**退*出*游*戏**       *", F_RED);
 	writechar(10, 16, "*                                     *", F_RED);

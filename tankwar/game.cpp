@@ -12,49 +12,34 @@ void game::rungame()
 {
 	//设置窗口大小和标题
 	m_draw.setwindowssize("Tank War v0.1", 100, 39);
+	//画边框
+	m_draw.drawmapborder();
+	//画计分板1
 	m_draw.drawscoringboard(1);
 	drawandselectmenu();
-	
 }
 void game::drawandselectmenu()
 {
-	system("cls");
+	//画开始菜单
 	m_draw.drawstartmenu();
 	m_draw.drawscoringboard(1);
-	while (true)
-	{
-		char ch;
-		//getinput(ch, menu, play1);
-		getmenuselect(ch);
-	}
+	char ch;
+	getstartmenuselect(ch);
 }
 void game::initplayer1()
 {
 	tank::stank stank{ 0, 13, 37, 2, TANK_ID_MINE1 };
 	m_tank1.inittankinfo(stank);
-	//m_vecEnemy.push_back(m_tank1);
-
 	m_draw.drawtank(0, 13, 37, "①", tank_pic[1], F_YELLOW);
 }
 void game::initplayer2()
 {
 	tank::stank stank2{ 0, 27, 37, 2, TANK_ID_MINE2 };
 	m_tank2.inittankinfo(stank2);
-	m_draw.drawtank(0, 27, 37, "②", tank_pic[2], F_GREEN);
+	m_draw.drawtank(0, 27, 37, "①", tank_pic[1], F_YELLOW);
 }
 void game::initenemytank(int nInit)
 {
-	if (m_targets==1)
-	{
-		char ch;
-		m_draw.drawwin();
-		while (1)
-		{
-			//getinput(ch, menu, play1);
-			getmenuselect(ch);
-		}
-		
-	}
 	tank::stank enemy[] = {
 		1, 2, 2, 2, TANK_ID_ENEMY3,
 		1, 20, 2, 2, TANK_ID_ENEMY4,
@@ -72,9 +57,8 @@ void game::initenemytank(int nInit)
 				enemy[i].nx,
 				enemy[i].ny,
 				"③",
-				tank_pic[i+1],
+				tank_pic[4],
 				F_RED);
-			//m_targets--;
 		}
 		return;
 	}
@@ -86,7 +70,7 @@ void game::initenemytank(int nInit)
 }
 void game::initsingleplayergame()
 {
-	m_targets = 10;
+	m_targets = 5;
 	player1life = 5;
 	m_draw.drawscoringboard(2);
 	initplayer1();
@@ -94,7 +78,7 @@ void game::initsingleplayergame()
 }
 void game::initdoubleplayergame()
 {
-	m_targets = 20;
+	m_targets = 5;
 	player1life = 5;
 	player2life = 5;
 	m_draw.drawscoringboard(3);
@@ -104,11 +88,24 @@ void game::initdoubleplayergame()
 }
 bool game::singleplayerloop()
 {
-
+	issingle = true;
+	m_draw.drawscoringboard(2);
 	DWORD dwplayerbegin = GetTickCount(), dwbullebegin = GetTickCount(), dwplayerend, dwbulletend;
 	while (true)
 	{
-		
+		if (m_targets ==0)
+		{
+			char ch;
+ 			m_draw.drawwinmenu();
+			getwinmenuselect(ch);
+			
+		}
+		if (player1life==0)
+		{
+			char ch;
+			m_draw.drawlostmenu();
+			getlostmenuselect(ch);
+		}
 		dwplayerend = GetTickCount();
 		if (dwplayerend - dwplayerbegin > 100)
 		{
@@ -126,24 +123,41 @@ bool game::singleplayerloop()
 			bullettime();
 		
 		}
-		//打印计分板
-
 	}
 	return false;
 }
 bool game::doubleplayerloop()
 {
+	m_draw.drawscoringboard(3);
+	issingle =false;
 	DWORD dwplayerbegin = GetTickCount(), dwbulletbegin = GetTickCount(),
 		dwplayerend, dwbulletend;
 	while (true)
 	{
-		// jianceshuying
+		if (m_targets == 0)
+		{
+			char ch;
+			m_draw.drawwinmenu();
+			getwinmenuselect(ch);
+		}
+		if (player1life == 0 && player2life == 0)
+		{
+			char ch;
+			m_draw.drawstopmenu();
+			getlostmenuselect(ch);
+		}
 		dwplayerend = GetTickCount();
 		if (dwplayerend - dwplayerbegin > 100)
 		 {
 			dwplayerbegin = dwplayerend;
-			runtime(m_tank1, doublegame[0]);
-			runtime(m_tank2, doublegame[1]);
+			if (player1life!=0)
+			{
+				runtime(m_tank1, doublegame[0]);
+			}
+			if (player2life!=0)
+			{
+				runtime(m_tank2, doublegame[1]);
+			}
 			for (size_t i = 0; i < m_vecEnemy.size(); i++)
 			{
 				enemytime(m_vecEnemy[i], doublegame[i + 2]);
@@ -204,236 +218,17 @@ bool game::enemytime(tank & enemytank,int who)
 	setmapvaluetank(enemytank.m_obj.nx, enemytank.m_obj.ny, enemytank.m_obj.nid);
 	return true;
 }
-//bool game::getinput(_Out_ char &ch, _In_ int leixing, _In_ int who)
-//{
-//	if (leixing == control)
-//	{
-//		if (who==play1)
-//		{
-//			if (KEYDOWN('w') || KEYDOWN('W'))
-//			{
-//				if (tankmovecrash(UP, m_tank1))
-//				{
-//					m_tank1.tankmove(UP);
-//				}
-//			}
-//			if (KEYDOWN('S') || KEYDOWN('s'))
-//			{
-//				if (tankmovecrash(DOWN, m_tank1))
-//				{
-//					m_tank1.tankmove(DOWN);
-//				}
-//			}
-//			if (KEYDOWN('A') || KEYDOWN('a'))
-//			{
-//				if (tankmovecrash(LEFT, m_tank1))
-//				{
-//					m_tank1.tankmove(LEFT);
-//				}
-//			}
-//			if (KEYDOWN('D') || KEYDOWN('d'))
-//			{
-//				if (tankmovecrash(RIGHT, m_tank1))
-//				{
-//					m_tank1.tankmove(RIGHT);
-//				}
-//			}
-//			if (KEYDOWN(VK_SPACE))
-//			{
-//				bullet bullet_1;
-//				if (createbullet(m_tank1, BULLET_ID_MINE1, bullet_1))
-//				{
-//					m_vecbullet.push_back(bullet_1);
-//					m_draw.drawbullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, bullet_pic[1]);
-//					setmapvaluebullet(bullet_1.m_obj.nx, bullet_1.m_obj.ny, BULLET_ID_MINE1);
-//				}
-//			}
-//			if (KEYDOWN(VK_ESCAPE))
-//			{
-//				drawandselectmenu();
-//			}
-//			return true;
-//		}
-//		if (who==play2)
-//		{
-//			if (KEYDOWN('i') || (KEYDOWN('I')))
-//			{
-//				if (tankmovecrash(UP, m_tank2))
-//				{
-//					m_tank2.tankmove(UP);
-//				}
-//			}
-//			if (KEYDOWN('K') || KEYDOWN('k'))
-//			{
-//				if (tankmovecrash(DOWN, m_tank2))
-//				{
-//					m_tank2.tankmove(DOWN);
-//				}
-//			}
-//			if (KEYDOWN('j') || KEYDOWN('J'))
-//			{
-//				if (tankmovecrash(LEFT, m_tank2))
-//				{
-//					m_tank2.tankmove(LEFT);
-//				}
-//			}
-//			if (KEYDOWN('L') || KEYDOWN('l'))
-//			{
-//				if (tankmovecrash(RIGHT, m_tank2))
-//				{
-//					m_tank2.tankmove(RIGHT);
-//				}
-//			}
-//			if (KEYDOWN(VK_ESCAPE))
-//			{
-//				drawandselectmenu();
-//			}
-//			if (KEYDOWN('o') || KEYDOWN('O'))
-//			{
-//				bullet bullet_2;
-//				if (createbullet(m_tank2, BULLET_ID_MINE2, bullet_2))
-//				{
-//					m_vecbullet.push_back(bullet_2);
-//					m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[2]);
-//					setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, BULLET_ID_MINE2);
-//				}
-//			}
-//		}
-//		if (who == enemy3)
-//		{
-//			if (ch == '1')
-//			{
-//				if (tankmovecrash(UP, m_vecEnemy[0]))
-//				{
-//					m_vecEnemy[0].tankmove(UP);
-//				}
-//			}
-//			if (ch == '2')
-//			{
-//				if (tankmovecrash(DOWN, m_vecEnemy[0]))
-//				{
-//					m_vecEnemy[0].tankmove(DOWN);
-//				}
-//			}
-//			if (ch == '3')
-//			{
-//				if (tankmovecrash(LEFT, m_vecEnemy[0]))
-//				{
-//					m_vecEnemy[0].tankmove(LEFT);
-//				}
-//			}
-//			if (ch == '4')
-//			{
-//				if (tankmovecrash(RIGHT, m_vecEnemy[0]))
-//				{
-//					m_vecEnemy[0].tankmove(RIGHT);
-//				}
-//			}
-//			if (ch == '5')
-//			{
-//				bullet bullet_3;
-//				if (createbullet(m_vecEnemy[0], BULLET_ID_ENEMY3, bullet_3))
-//				{
-//					m_vecbullet.push_back(bullet_3);
-//					m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[3]);
-//					setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, BULLET_ID_ENEMY3);
-//				}
-//			}
-//		}
-//		if (who == enemy4)
-//		{
-//			if (ch == '1')
-//			{
-//				if (tankmovecrash(UP, m_vecEnemy[1]))
-//				{
-//					m_vecEnemy[1].tankmove(UP);
-//				}
-//			}
-//			if (ch == '2')
-//			{
-//				if (tankmovecrash(DOWN, m_vecEnemy[1]))
-//				{
-//					m_vecEnemy[1].tankmove(DOWN);
-//				}
-//			}
-//			if (ch == '3')
-//			{
-//				if (tankmovecrash(LEFT, m_vecEnemy[1]))
-//				{
-//					m_vecEnemy[1].tankmove(LEFT);
-//				}
-//			}
-//			if (ch == '4')
-//			{
-//				if (tankmovecrash(RIGHT, m_vecEnemy[1]))
-//				{
-//					m_vecEnemy[1].tankmove(RIGHT);
-//				}
-//			}
-//			if (ch == '5')
-//			{
-//				bullet bullet_4;
-//				if (createbullet(m_vecEnemy[1], BULLET_ID_ENEMY4, bullet_4))
-//				{
-//					m_vecbullet.push_back(bullet_4);
-//					m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[3]);
-//					setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, BULLET_ID_ENEMY4);
-//				}
-//			}
-//		}
-//		if (who == enemy5)
-//		{
-//			if (ch == '1')
-//			{
-//				if (tankmovecrash(UP, m_vecEnemy[2]))
-//				{
-//					m_vecEnemy[2].tankmove(UP);
-//				}
-//			}
-//			if (ch == '2')
-//			{
-//				if (tankmovecrash(DOWN, m_vecEnemy[2]))
-//				{
-//					m_vecEnemy[2].tankmove(DOWN);
-//				}
-//			}
-//			if (ch == '3')
-//			{
-//				if (tankmovecrash(LEFT, m_vecEnemy[2]))
-//				{
-//					m_vecEnemy[2].tankmove(LEFT);
-//				}
-//			}
-//			if (ch == '4')
-//			{
-//				if (tankmovecrash(RIGHT, m_vecEnemy[2]))
-//				{
-//					m_vecEnemy[2].tankmove(RIGHT);
-//				}
-//			}
-//			if (ch == '5')
-//			{
-//				bullet bullet_5;
-//				if (createbullet(m_vecEnemy[2], BULLET_ID_ENEMY5, bullet_5))
-//				{
-//					m_vecbullet.push_back(bullet_5);
-//					m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[3]);
-//					setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, BULLET_ID_ENEMY5);
-//				}
-//			}
-//		}
-//	}
-//	else if (leixing==menu)
-//	{
 
-//	}
-//	return true;
-//}
 //获取来自who变量的输入
 bool game::getinput(_Out_ char &ch, _In_ int who)
 {
+
 	if (who == play1)
 	{
+		if (player1life == 0)
+		{
+			return false;
+		}
 		if (KEYDOWN('w') || KEYDOWN('W'))
 		{
 			if (tankmovecrash(UP, m_tank1))
@@ -474,12 +269,19 @@ bool game::getinput(_Out_ char &ch, _In_ int who)
 		}
 		if (KEYDOWN(VK_ESCAPE))
 		{
-			//drawandselectmenu();
+			char ch;
+			m_draw.drawstopmenu();
+			getstopmenuselect(ch);
+			singleplayerloop();
 		}
 		return true;
 	}
 	if (who == play2)
 	{
+		if (player2life == 0)
+		{
+			return false;
+		}
 		if (KEYDOWN('i') || (KEYDOWN('I')))
 		{
 			if (tankmovecrash(UP, m_tank2))
@@ -518,7 +320,7 @@ bool game::getinput(_Out_ char &ch, _In_ int who)
 			if (createbullet(m_tank2, BULLET_ID_MINE2, bullet_2))
 			{
 				m_vecbullet.push_back(bullet_2);
-				m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[2]);
+				m_draw.drawbullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, bullet_pic[1]);
 				setmapvaluebullet(bullet_2.m_obj.nx, bullet_2.m_obj.ny, BULLET_ID_MINE2);
 			}
 		}
@@ -559,7 +361,7 @@ bool game::getinput(_Out_ char &ch, _In_ int who)
 			if (createbullet(m_vecEnemy[0], BULLET_ID_ENEMY3, bullet_3))
 			{
 				m_vecbullet.push_back(bullet_3);
-				m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[3]);
+				m_draw.drawbullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, bullet_pic[1]);
 				setmapvaluebullet(bullet_3.m_obj.nx, bullet_3.m_obj.ny, BULLET_ID_ENEMY3);
 			}
 		}
@@ -600,7 +402,7 @@ bool game::getinput(_Out_ char &ch, _In_ int who)
 			if (createbullet(m_vecEnemy[1], BULLET_ID_ENEMY4, bullet_4))
 			{
 				m_vecbullet.push_back(bullet_4);
-				m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[3]);
+				m_draw.drawbullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, bullet_pic[1]);
 				setmapvaluebullet(bullet_4.m_obj.nx, bullet_4.m_obj.ny, BULLET_ID_ENEMY4);
 			}
 		}
@@ -641,7 +443,7 @@ bool game::getinput(_Out_ char &ch, _In_ int who)
 			if (createbullet(m_vecEnemy[2], BULLET_ID_ENEMY5, bullet_5))
 			{
 				m_vecbullet.push_back(bullet_5);
-				m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[3]);
+				m_draw.drawbullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, bullet_pic[1]);
 				setmapvaluebullet(bullet_5.m_obj.nx, bullet_5.m_obj.ny, BULLET_ID_ENEMY5);
 			}
 		}
@@ -651,35 +453,193 @@ bool game::getinput(_Out_ char &ch, _In_ int who)
 //获取开始菜单的输入信息
 bool game::getstartmenuselect(_Out_ char &)
 {
-	if (KEYDOWN('1'))
+	while (true)
 	{
-		issingle = true;
-		m_draw.drawmap();
-		initsingleplayergame();
-		singleplayerloop();
-	}
-	if (KEYDOWN('2'))
-	{
-		issingle = false;
-		m_draw.drawmap();
-		initdoubleplayergame();
-		doubleplayerloop();
-	}
-	if (KEYDOWN('3'))
-	{
+		//m_vecEnemy.swap(vector<tank>());
+		if (KEYDOWN('1'))
+		{
+			PlaySound(TEXT("res\\start.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
+			issingle = true;
+			system("cls");
+			m_draw.drawmap();
+			initsingleplayergame();
+			singleplayerloop();
+			return true;
+		}
+		if (KEYDOWN('2'))
+		{
+			PlaySound(TEXT("res\\start.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
+			issingle = false;
+			m_draw.drawmap();
+			initdoubleplayergame();
+			doubleplayerloop();
+		}
+		if (KEYDOWN('3'))
+		{
+			PlaySound(TEXT("res\\输.mp3"), NULL, SND_ASYNC | SND_NODEFAULT);
 
-	}
-	if (KEYDOWN('4'))
-	{
-		exit(0);
+		}
+		if (KEYDOWN('4'))
+		{
+			exit(0);
+		}
 	}
 	return true;
 }
 //获取来自win菜单的输入
-bool 
+bool game::getwinmenuselect(_Out_ char &ch)
+{
+	while (true)
+	{
+		if (KEYDOWN('1'))
+		{
+			if (issingle == 1)
+			{
+				//难度提升，需要杀敌数量开始上升
+				m_targets = (m_target++) * 2;
+				//清除屏幕上的各种信息
+				system("cls");
+				m_draw.cleartank(m_tank1.m_obj.ndirection, m_tank1.m_obj.nx, m_tank1.m_obj.ny);
+				setmapvaluetank(m_tank1.m_obj.nx, m_tank1.m_obj.ny, 0);
+				//清除两个容器
+				m_vecbullet.clear();
+				m_vecEnemy.clear();
+				//画地图
+				m_draw.drawmap();
+				//画计分板
+				m_draw.drawscoringboard(2);
+				//初始化坦克
+				initplayer1();
+				initenemytank(4);
+				//进入循环
+				singleplayerloop();
+			}
+			else
+			{
+				//难度提升，需要杀敌数量开始上升
+				m_targets = (m_target++) * 3;
+				//清除屏幕上的各种信息
+				system("cls");
+				m_draw.cleartank(m_tank1.m_obj.ndirection, m_tank1.m_obj.nx, m_tank1.m_obj.ny);
+				setmapvaluetank(m_tank1.m_obj.nx, m_tank1.m_obj.ny, 0);
+				m_draw.cleartank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny);
+				setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, 0);
+				//清除两个容器
+				m_vecbullet.clear();
+				m_vecEnemy.clear();
+				//画地图
+				m_draw.drawmap();
+				//画积分
+				m_draw.drawscoringboard(3);
+				//初始化
+				initplayer1();
+				initplayer2();
+				initenemytank(4);
+				//进入循环
+				doubleplayerloop();
+			}
+		}
+		else if (KEYDOWN('0'))
+		{
+			exit(0);
+
+		}
+
+	}
+	return true;
+}
 //获取来自暂停菜单的输入
-bool
+bool game::getstopmenuselect(_Out_ char &ch)
+{
+	while (true)
+	{
+		if (KEYDOWN('1'))
+		{
+			if (issingle == 1)
+			{
+				system("cls");
+				m_draw.drawmap();
+				singleplayerloop();
+			}
+			else
+			{
+				system("cls");
+				m_draw.drawmap();
+				doubleplayerloop();
+			}
+		}
+		else if (KEYDOWN('0'))
+		{
+			exit(0);
+
+		}
+
+	}
+	return true;
+	
+}
 //获取来自lost菜单的输入
+bool game::getlostmenuselect(_Out_ char &ch)
+{
+	while (true)
+	{
+		if (KEYDOWN('1'))
+		{
+			if (issingle == 1)
+			{
+
+				//给玩家的生命值重新赋值
+				player1life = 5;
+				//清除屏幕上的各种信息
+				m_draw.cleartank(m_tank1.m_obj.ndirection, m_tank1.m_obj.nx, m_tank1.m_obj.ny);
+				setmapvaluetank(m_tank1.m_obj.nx, m_tank1.m_obj.ny, 0);
+				//清除两个容器
+				m_vecbullet.clear();
+				m_vecEnemy.clear();
+				system("cls");
+				//画地图
+				m_draw.drawmap();
+				//画计分板
+				m_draw.drawscoringboard(2);
+				//初始化坦克
+				initplayer1();
+				initenemytank(4);
+				//进入循环
+				singleplayerloop();
+			}
+			else
+			{
+				//给玩家1的生命值重新赋值
+				player1life = 5;
+				player2life = 5;
+				system("cls");
+				m_draw.cleartank(m_tank1.m_obj.ndirection, m_tank1.m_obj.nx, m_tank1.m_obj.ny);
+				setmapvaluetank(m_tank1.m_obj.nx, m_tank1.m_obj.ny, 0);
+				m_draw.cleartank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny);
+				setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, 0);
+				//清除两个容器
+				m_vecbullet.clear();
+				m_vecEnemy.clear();
+		
+				//画地图
+				m_draw.drawmap();
+				//画积分
+				m_draw.drawscoringboard(3);
+				//初始化
+				initplayer1();
+				initplayer2();
+				initenemytank();
+				//进入循环
+				doubleplayerloop();
+			}
+		}
+		else if (KEYDOWN('0'))
+		{
+			exit(0);
+		}
+	}
+	return false;
+}
 bool game::bullettime()
 {
 	for (UINT i = 0; i < m_vecbullet.size(); i++)
@@ -742,7 +702,7 @@ bool game::createbullet(tank &tank_, unsigned int nid, bullet &bullet_)
 {
 	static int cT = GetTickCount(), ct1;
 	ct1 = GetTickCount();
-	if (ct1 - cT < 400)
+	if (ct1 - cT < 200)
 	{
 		return false;
 	}
@@ -752,6 +712,7 @@ bool game::createbullet(tank &tank_, unsigned int nid, bullet &bullet_)
 	bullet_ = { tank_.m_obj.ndirection, (unsigned int)pt[0].x, (unsigned int)pt[0].y, nid };
 	if (!bulletcrashall(pt[0],bullet_))
 	{
+		PlaySound(TEXT("res\\Fire.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 		return true;
 	}
 	return false;
@@ -790,7 +751,8 @@ bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
 				return true;
 			}
 			else
-			{			
+			{	
+				PlaySound(TEXT("res\\explode.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 				m_draw.cleartank(m_vecEnemy[nId].m_obj.ndirection, m_vecEnemy[nId].m_obj.nx, m_vecEnemy[nId].m_obj.ny);
 				setmapvaluetank(m_vecEnemy[nId].m_obj.nx, m_vecEnemy[nId].m_obj.ny, 0);
 				initenemytank(nId);
@@ -836,7 +798,7 @@ bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
 				}
 				else
 				{
-					
+					PlaySound(TEXT("res\\explode.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 					m_draw.cleartank(m_tank1.m_obj.ndirection, m_tank1.m_obj.nx, m_tank1.m_obj.ny);
 					setmapvaluetank(m_tank1.m_obj.nx, m_tank1.m_obj.ny, 0);
 					initplayer1();
@@ -862,6 +824,7 @@ bool game::bulletcrashtank(int &nvalue, CPoint &ptbullet,bullet &bullet_id)
 				}
 				else
 				{
+					PlaySound(TEXT("res\\explode.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 					m_draw.cleartank(m_tank2.m_obj.ndirection, m_tank2.m_obj.nx, m_tank2.m_obj.ny);
 					setmapvaluetank(m_tank2.m_obj.nx, m_tank2.m_obj.ny, 0);
 					initplayer2();

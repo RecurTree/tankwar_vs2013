@@ -21,15 +21,19 @@ void tank::tankmove(DWORD dwdir)
 		switch (dwdir)
 		{
 		case UP:
+			PlaySound(TEXT("res\\move.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 			m_obj.ny--;
 			break;
 		case DOWN:
+			PlaySound(TEXT("res\\move.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 			m_obj.ny++;
 			break;
 		case LEFT:
+			PlaySound(TEXT("res\\move.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 			m_obj.nx--;
 			break;
 		case RIGHT:
+			PlaySound(TEXT("res\\move.wav"), NULL, SND_ASYNC | SND_NODEFAULT);
 			m_obj.nx++;
 			break;
 		}

@@ -7,6 +7,7 @@ class draw
 public:
 	static int m_gnmap[40][40];
 	static int m_gntankshape[4][3][3];
+	int  m_gnmapCpy[40][40];
 	draw();
 	virtual ~draw();
 	bool setwindowssize(char *pszwindowtitle,short nx,short ny);

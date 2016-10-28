@@ -92,7 +92,7 @@ extern int doublegame[5];
 #define enemyid 2
 
 
-
+extern int m_target;
 extern int m_targets;
 extern int m_boardtype;   //1为菜单提示   2为 单人游戏计分板，3为双人游戏计分板
 extern int player1_score;
